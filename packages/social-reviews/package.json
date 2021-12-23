@@ -17,6 +17,8 @@
   "dependencies": {
     "@titicaca/core-elements": "^4.1.4",
     "@titicaca/i18n": "^4.1.4",
+    "@titicaca/react-contexts": "^4.1.4",
+    "@titicaca/router": "^4.1.4",
     "i18next": "^19.3.3",
     "isomorphic-fetch": "^2.2.1",
     "react-i18next": "^11.3.3"

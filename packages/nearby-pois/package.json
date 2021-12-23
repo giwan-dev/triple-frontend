@@ -19,6 +19,8 @@
     "@titicaca/i18n": "^4.1.4",
     "@titicaca/intersection-observer": "^4.1.4",
     "@titicaca/poi-list-elements": "^4.1.4",
+    "@titicaca/react-contexts": "^4.1.4",
+    "@titicaca/router": "^4.1.4",
     "@titicaca/type-definitions": "^4.1.4",
     "@titicaca/view-utilities": "^4.1.4",
     "isomorphic-fetch": "^2.2.1"

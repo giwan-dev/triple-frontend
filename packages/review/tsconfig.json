@@ -19,7 +19,13 @@
       "path": "../modals"
     },
     {
+      "path": "../react-contexts"
+    },
+    {
       "path": "../react-hooks"
+    },
+    {
+      "path": "../router"
     },
     {
       "path": "../type-definitions"

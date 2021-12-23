@@ -2,40 +2,36 @@ import { Responsive } from '@titicaca/core-elements'
 import { ImageMeta } from '@titicaca/type-definitions'
 import React from 'react'
 
-import { ImageElement, SquareFrame } from './elements'
+import { ReviewData } from '../../types'
+
+import { ExternalLinkImage, ImageElement, SquareFrame } from './elements'
 
 export default function SigleImage({
   image,
+  review,
   onImageClick,
 }: {
   image: ImageMeta
-  onImageClick: (e: React.SyntheticEvent, index: number) => void
+  review: ReviewData
+  onImageClick: () => void
 }) {
   return (
     <>
       <Responsive maxWidth={499}>
-        {image.width && image.height && image.width > image.height ? (
-          <ImageElement
-            src={image.sizes.large.url}
-            onClick={(e) => onImageClick(e, 0)}
-          />
-        ) : (
-          <SquareFrame>
-            <ImageElement
-              src={image.sizes.large.url}
-              absolute
-              fullHeight
-              onClick={(e) => onImageClick(e, 0)}
-            />
-          </SquareFrame>
-        )}
+        <ExternalLinkImage review={review} image={image} onClick={onImageClick}>
+          {image.width && image.height && image.width > image.height ? (
+            <ImageElement src={image.sizes.large.url} />
+          ) : (
+            <SquareFrame>
+              <ImageElement src={image.sizes.large.url} absolute fullHeight />
+            </SquareFrame>
+          )}
+        </ExternalLinkImage>
       </Responsive>
       <Responsive minWidth={500}>
-        <ImageElement
-          src={image.sizes.large.url}
-          height={293}
-          onClick={(e) => onImageClick(e, 0)}
-        />
+        <ExternalLinkImage review={review} image={image} onClick={onImageClick}>
+          <ImageElement src={image.sizes.large.url} height={293} />
+        </ExternalLinkImage>
       </Responsive>
     </>
   )

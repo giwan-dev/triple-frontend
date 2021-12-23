@@ -1,8 +1,14 @@
 import React from 'react'
 import SocialReviews from '@titicaca/social-reviews'
 
+import {
+  sessionContextProviderDecorator,
+  userAgentProviderDecorator,
+} from '../../decorators'
+
 export default {
   title: 'Social-Reviews / SocialReviews',
+  decorators: [sessionContextProviderDecorator, userAgentProviderDecorator],
 }
 
 export function BaseSocialReviews() {

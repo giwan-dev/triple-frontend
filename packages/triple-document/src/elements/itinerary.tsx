@@ -2,12 +2,13 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { Container, Card, Text, FlexBox, Button } from '@titicaca/core-elements'
 import { gray100, white } from '@titicaca/color-palette'
-import { useHistoryFunctions } from '@titicaca/react-contexts'
+import { useUserAgentContext } from '@titicaca/react-contexts'
 import type {
   TransportationType,
   Itinerary,
   ItineraryItemType,
 } from '@titicaca/content-type-definitions'
+import { ExternalLink } from '@titicaca/router'
 
 import ItineraryMap from './itinerary/itinerary-map'
 import useItinerary from './itinerary/use-computed-itineraries'
@@ -88,7 +89,8 @@ const SaveToItineraryButton = styled(Button)`
 `
 
 export default function ItineraryElement({ value }: Props) {
-  const { navigate } = useHistoryFunctions()
+  const { isPublic } = useUserAgentContext()
+
   const {
     courses,
     regionId,
@@ -98,26 +100,6 @@ export default function ItineraryElement({ value }: Props) {
   } = useItinerary(value)
   const addPoisToTrip = useHandleAddPoisToTrip(regionId || '')
 
-  const generatePoiClickHandler = useCallback(
-    (
-      regionId: string,
-      type: ItineraryItemType['poi']['type'],
-      id: string,
-    ) => () => {
-      navigate(`${regionId ? `/regions/${regionId}` : ''}/${type}s/${id}`)
-    },
-    [navigate],
-  )
-
-  const handleMarkerClick = useCallback(
-    ({ id, type, source }: ItineraryItemType['poi']) => {
-      navigate(
-        `${source?.regionId ? `/regions/${regionId}` : ''}/${type}s/${id}`,
-      )
-    },
-    [navigate, regionId],
-  )
-
   const handleSaveToItinerary = useCallback(() => {
     addPoisToTrip(poiIds)
     /** TODO: event tracking */
@@ -125,7 +107,7 @@ export default function ItineraryElement({ value }: Props) {
 
   return (
     <Container margin={{ top: 10, bottom: 10 }}>
-      <ItineraryMap {...value.itinerary} onClickMarker={handleMarkerClick} />
+      <ItineraryMap {...value.itinerary} />
       <Container margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
         <Stack>
           {courses.map((course, index) => {
@@ -185,37 +167,44 @@ export default function ItineraryElement({ value }: Props) {
                     ) : null}
                   </FlexBox>
                 </Timeline>
-                <CardWrapper
-                  flexGrow={1}
-                  as="a"
-                  onClick={generatePoiClickHandler(regionId, type, id)}
-                >
+
+                <CardWrapper flexGrow={1} as="a">
                   <PoiCard
                     shadow="medium"
                     radius={6}
                     margin={{ top: 5, bottom: 8 }}
                   >
-                    <Text size={16} bold ellipsis>
-                      {name}
-                    </Text>
-                    <Text
-                      size={13}
-                      color="gray500"
-                      lineHeight={1.4}
-                      padding={{ top: 6 }}
+                    <ExternalLink
+                      href={`${
+                        regionId ? `/regions/${regionId}` : ''
+                      }/${type}s/${id}`}
+                      target={isPublic ? 'current' : 'new'}
+                      allowSource="all"
                     >
-                      {description}
-                    </Text>
-                    {memo ? (
-                      <Text
-                        size={14}
-                        margin={{ top: 10 }}
-                        maxLines={2}
-                        lineHeight="18px"
-                      >
-                        {memo}
-                      </Text>
-                    ) : null}
+                      <a>
+                        <Text size={16} bold ellipsis>
+                          {name}
+                        </Text>
+                        <Text
+                          size={13}
+                          color="gray500"
+                          lineHeight={1.4}
+                          padding={{ top: 6 }}
+                        >
+                          {description}
+                        </Text>
+                        {memo ? (
+                          <Text
+                            size={14}
+                            margin={{ top: 10 }}
+                            maxLines={2}
+                            lineHeight="18px"
+                          >
+                            {memo}
+                          </Text>
+                        ) : null}
+                      </a>
+                    </ExternalLink>
                   </PoiCard>
                 </CardWrapper>
               </FlexBox>
@@ -249,6 +238,7 @@ function PoiCircleBadge(type: ItineraryItemType['poi']['type']) {
       return HotelCircleBadge
     case 'attraction':
       return AttractionCircleBadge
+
     case 'restaurant':
       return RestaurantCircleBadge
   }

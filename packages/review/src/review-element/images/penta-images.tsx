@@ -2,20 +2,27 @@ import { Responsive, Text } from '@titicaca/core-elements'
 import { ImageMeta } from '@titicaca/type-definitions'
 import React from 'react'
 
+import { ReviewData } from '../../types'
+
 import {
   ImageElement,
   SquareFrame,
   Dimmer,
   FlexItemContainer,
   ImagesContainer,
+  ExternalLinkImage,
 } from './elements'
 
 export default function PentaImages({
   images,
+  image,
+  review,
   onImageClick,
 }: {
   images: ImageMeta[]
-  onImageClick: (e: React.SyntheticEvent, index: number) => void
+  image: ImageMeta
+  review: ReviewData
+  onImageClick: () => void
 }) {
   const [firstImage, secondImage, ...lowerImages] = images.slice(0, 5)
   const upperImages = [firstImage, secondImage]
@@ -31,12 +38,13 @@ export default function PentaImages({
                 margin={{ right: index === 0 ? 5 : 0 }}
               >
                 <SquareFrame>
-                  <ImageElement
-                    src={sizes.large.url}
-                    absolute
-                    fullHeight
-                    onClick={(e) => onImageClick(e, index)}
-                  />
+                  <ExternalLinkImage
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement src={sizes.large.url} absolute fullHeight />
+                  </ExternalLinkImage>
                 </SquareFrame>
               </FlexItemContainer>
             ))}
@@ -49,21 +57,22 @@ export default function PentaImages({
                 margin={{ right: index < 2 ? 5 : 0 }}
               >
                 <SquareFrame>
-                  <ImageElement
-                    src={sizes.large.url}
-                    absolute
-                    fullHeight
-                    onClick={(e) => onImageClick(e, index)}
-                  />
-                  {images.length > 5 && index === 2 ? (
-                    <Dimmer onClick={(e) => onImageClick(e, index)}>
-                      <td>
-                        <Text bold color="white900" textAlign="center">
-                          + {images.length - 5}
-                        </Text>
-                      </td>
-                    </Dimmer>
-                  ) : null}
+                  <ExternalLinkImage
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement src={sizes.large.url} absolute fullHeight />
+                    {images.length > 5 && index === 2 ? (
+                      <Dimmer onClick={() => onImageClick()}>
+                        <td>
+                          <Text bold color="white900" textAlign="center">
+                            + {images.length - 5}
+                          </Text>
+                        </td>
+                      </Dimmer>
+                    ) : null}
+                  </ExternalLinkImage>
                 </SquareFrame>
               </FlexItemContainer>
             ))}
@@ -84,11 +93,13 @@ export default function PentaImages({
                   flexShrink={1}
                   margin={{ right: index === 0 ? 6 : 0 }}
                 >
-                  <ImageElement
-                    src={sizes.large.url}
-                    fullHeight
-                    onClick={(e) => onImageClick(e, index)}
-                  />
+                  <ExternalLinkImage
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement src={sizes.large.url} fullHeight />
+                  </ExternalLinkImage>
                 </FlexItemContainer>
               ))}
             </ImagesContainer>
@@ -105,11 +116,13 @@ export default function PentaImages({
                   flexShrink={1}
                   margin={{ right: index === 0 ? 9 : 0 }}
                 >
-                  <ImageElement
-                    src={sizes.large.url}
-                    fullHeight
-                    onClick={(e) => onImageClick(e, index)}
-                  />
+                  <ExternalLinkImage
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement src={sizes.large.url} fullHeight />
+                  </ExternalLinkImage>
                 </FlexItemContainer>
               ))}
             </ImagesContainer>
@@ -121,20 +134,22 @@ export default function PentaImages({
                 flexShrink={1}
                 margin={{ right: index < 2 ? 9 : 0 }}
               >
-                <ImageElement
-                  src={sizes.large.url}
-                  fullHeight
-                  onClick={(e) => onImageClick(e, index)}
-                />
-                {images.length > 5 && index === 2 ? (
-                  <Dimmer onClick={(e) => onImageClick(e, index)}>
-                    <td>
-                      <Text bold color="white900" textAlign="center">
-                        + {images.length - 5}
-                      </Text>
-                    </td>
-                  </Dimmer>
-                ) : null}
+                <ExternalLinkImage
+                  review={review}
+                  image={image}
+                  onClick={onImageClick}
+                >
+                  <ImageElement src={sizes.large.url} fullHeight />
+                  {images.length > 5 && index === 2 ? (
+                    <Dimmer onClick={() => onImageClick()}>
+                      <td>
+                        <Text bold color="white900" textAlign="center">
+                          + {images.length - 5}
+                        </Text>
+                      </td>
+                    </Dimmer>
+                  ) : null}
+                </ExternalLinkImage>
               </FlexItemContainer>
             ))}
           </ImagesContainer>

@@ -10,7 +10,11 @@ import {
 } from '@titicaca/ad-banners'
 import styled from 'styled-components'
 
-import { historyProviderDecorator } from '../../decorators'
+import {
+  historyProviderDecorator,
+  sessionContextProviderDecorator,
+  userAgentProviderDecorator,
+} from '../../decorators'
 
 const CONTENT_TYPE_SET = {
   air: 'air',
@@ -26,7 +30,11 @@ const LongContent = styled.div`
 
 export default {
   title: 'ad-banners',
-  decorators: [historyProviderDecorator],
+  decorators: [
+    historyProviderDecorator,
+    sessionContextProviderDecorator,
+    userAgentProviderDecorator,
+  ],
 }
 
 function ProviderWrapper({ children }: { children: React.ReactNode }) {

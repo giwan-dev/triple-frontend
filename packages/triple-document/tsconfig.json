@@ -28,6 +28,12 @@
       "path": "../poi-list-elements"
     },
     {
+      "path": "../react-contexts"
+    },
+    {
+      "path": "../router"
+    },
+    {
       "path": "../scrap-button"
     },
     {

@@ -3,7 +3,6 @@ import { MarginPadding } from '@titicaca/core-elements'
 import {
   useDeviceContext,
   useEventTrackingContext,
-  useHistoryFunctions,
 } from '@titicaca/react-contexts'
 
 import {
@@ -65,7 +64,6 @@ function isPropsForInventoryAPI(
 function useAdBannerProps(props: AdBannersProps) {
   const { latitude, longitude } = useDeviceContext()
   const { trackEvent } = useEventTrackingContext()
-  const { navigate } = useHistoryFunctions()
 
   if (isPropsForInventoryAPI(props)) {
     const { onBannersFetch, onBannerIntersect, onBannerClick } = props
@@ -77,8 +75,6 @@ function useAdBannerProps(props: AdBannersProps) {
         if (onBannerClick) {
           onBannerClick(banner, index)
         }
-
-        navigate(banner.target)
       },
     }
   } else {
@@ -151,8 +147,6 @@ function useAdBannerProps(props: AdBannersProps) {
             `${title}_${contentId}_${banner.id}_${banner.desc}_${banner.target}`,
           ],
         })
-
-        navigate(banner.target)
       },
     }
   }

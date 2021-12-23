@@ -3,6 +3,7 @@ import { MarginPadding } from '@titicaca/core-elements'
 import { StaticIntersectionObserver as IntersectionObserver } from '@titicaca/intersection-observer'
 import { FlickingOptions } from '@egjs/flicking'
 import Flicking from '@egjs/react-flicking'
+import { ExternalLink } from '@titicaca/router'
 
 import { Banner } from './typing'
 import HorizontalEntity from './horizontal-entity'
@@ -101,17 +102,26 @@ const HorizontalListView: FC<HorizontalListViewProps> = ({
               setVisibleIndex(newIndex)
             }}
           >
-            {banners.map((banner, index) => {
-              return (
-                <HorizontalEntity
-                  key={banner.id}
-                  banner={banner}
-                  onClick={makeBannerClickHandler(index)}
-                  onLoad={resizeFlicking}
-                  widthOffset={Number(padding.left || padding.right || 25) * 2}
-                />
-              )
-            })}
+            {banners.map((banner, index) => (
+              <ExternalLink
+                key={banner.id}
+                href={banner.target}
+                target="new"
+                allowSource="app"
+              >
+                <a>
+                  <HorizontalEntity
+                    key={banner.id}
+                    banner={banner}
+                    onClick={makeBannerClickHandler(index)}
+                    onLoad={resizeFlicking}
+                    widthOffset={
+                      Number(padding.left || padding.right || 25) * 2
+                    }
+                  />
+                </a>
+              </ExternalLink>
+            ))}
           </Flicking>
         </ListSection>
       </div>

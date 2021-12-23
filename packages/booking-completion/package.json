@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@titicaca/core-elements": "^4.1.4",
-    "@titicaca/type-definitions": "^4.1.4",
-    "@titicaca/ui-flow": "^4.1.4"
+    "@titicaca/react-contexts": "^4.1.4",
+    "@titicaca/router": "^4.1.4",
+    "@titicaca/type-definitions": "^4.1.4"
   },
   "peerDependencies": {
-    "@titicaca/modals": "*",
     "@titicaca/react-contexts": "*"
   }
 }

@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 import { Section, Container, Text, Button } from '@titicaca/core-elements'
-import { formatNumber } from '@titicaca/view-utilities'
+import { formatNumber, generateUrl } from '@titicaca/view-utilities'
 import {
   useUserAgentContext,
   useEventTrackingContext,
   useSessionAvailability,
 } from '@titicaca/react-contexts'
-import { TransitionType, withLoginCTAModal } from '@titicaca/modals'
-import { useAppCallback, useSessionCallback } from '@titicaca/ui-flow'
+import { withLoginCTAModal } from '@titicaca/modals'
+import { ExternalLink } from '@titicaca/router'
+import qs from 'qs'
 
 import {
   fetchMyReview,
@@ -30,7 +31,6 @@ import SortingOptions, {
 } from './sorting-options'
 import usePaging from './use-paging'
 import MyReviewActionSheet from './my-review-action-sheet'
-import { useClientActions } from './use-client-actions'
 
 const REVIEWS_SECTION_ID = 'reviews'
 const DEFAULT_REVIEWS_COUNT_PER_PAGE = 20
@@ -99,6 +99,9 @@ function ReviewContainer({
   reviewsCount: number
   shortened?: boolean
   reviewed?: boolean
+  /**
+   * @deprecated env context를 사용하면 생략 가능
+   */
   deepLink?: string
   placeholderText?: string
   appNativeActions: AppNativeActionProps
@@ -110,10 +113,7 @@ function ReviewContainer({
    */
   onReviewWrite?: (e?: React.SyntheticEvent, rating?: number) => any
   onReviewDelete?: ReviewDeleteHandler
-  onFullListButtonClick?: (
-    e: React.SyntheticEvent,
-    sortingOption?: string,
-  ) => void
+  onFullListButtonClick?: (sortingOption?: string) => void
 }) {
   const sessionAvailable = useSessionAvailability()
 
@@ -127,12 +127,6 @@ function ReviewContainer({
   const [reviewRateDescriptions, setReviewRateDescriptions] = useState<
     string[]
   >([])
-  const {
-    writeReview,
-    editReview,
-    navigateReviewList,
-    navigateMileageIntro,
-  } = useClientActions()
 
   const setMyReview = useCallback(
     (review) =>
@@ -202,66 +196,25 @@ function ReviewContainer({
     unsubscribeReviewUpdateEvent,
   ])
 
-  const handleWriteButtonClick = useAppCallback(
-    TransitionType.ReviewWrite,
-    useSessionCallback(
-      useCallback(
-        (e: React.SyntheticEvent, rating: number = 0) => {
-          e.stopPropagation()
+  const handleWriteButtonClick = useCallback(() => {
+    trackEvent({
+      ga: ['리뷰_리뷰쓰기'],
+      fa: {
+        action: '리뷰_리뷰쓰기',
+        item_id: resourceId,
+      },
+    })
+  }, [trackEvent, resourceId])
 
-          trackEvent({
-            ga: ['리뷰_리뷰쓰기'],
-            fa: {
-              action: '리뷰_리뷰쓰기',
-              item_id: resourceId,
-            },
-          })
-
-          writeReview({
-            resourceType,
-            resourceId,
-            regionId,
-            rating,
-          })
-        },
-        [trackEvent, resourceId, writeReview, resourceType, regionId],
-      ),
-    ),
-  )
-
-  const handleFullListButtonClick = useAppCallback(
-    TransitionType.Review,
-    useSessionCallback(
-      useCallback(
-        (e: React.SyntheticEvent) => {
-          trackEvent({
-            ga: ['리뷰_전체보기'],
-            fa: {
-              action: '리뷰_전체보기',
-              item_id: resourceId,
-            },
-          })
-
-          e.stopPropagation()
-
-          navigateReviewList({
-            regionId,
-            resourceId,
-            resourceType,
-            sortingOption,
-          })
-        },
-        [
-          trackEvent,
-          resourceId,
-          navigateReviewList,
-          regionId,
-          resourceType,
-          sortingOption,
-        ],
-      ),
-    ),
-  )
+  const handleFullListButtonClick = useCallback(() => {
+    trackEvent({
+      ga: ['리뷰_전체보기'],
+      fa: {
+        action: '리뷰_전체보기',
+        item_id: resourceId,
+      },
+    })
+  }, [trackEvent, resourceId])
 
   const handleSortingOptionSelect: SortingOptionsProps['onSelect'] = (
     _,
@@ -293,10 +246,24 @@ function ReviewContainer({
     <Section anchor={REVIEWS_SECTION_ID}>
       <Container>
         {shortened ? (
-          <WriteIcon
-            src="https://assets.triple.guide/images/btn-com-write@2x.png"
+          <ExternalLink
+            href={generateUrl({
+              path: `/reviews/new`,
+              query: qs.stringify({
+                region_id: regionId,
+                resource_type: resourceType,
+                resource_id: resourceId,
+                rating: 0,
+              }),
+            })}
+            target="new"
+            allowSource="app-with-session"
             onClick={onReviewWrite || handleWriteButtonClick}
-          />
+          >
+            <a>
+              <WriteIcon src="https://assets.triple.guide/images/btn-com-write@2x.png" />
+            </a>
+          </ExternalLink>
         ) : null}
 
         {shortened ? (
@@ -352,47 +319,60 @@ function ReviewContainer({
 
       {reviewsCount > SHORTENED_REVIEWS_COUNT_PER_PAGE && shortened ? (
         <Container margin={{ top: 40 }}>
-          <Button
-            basic
-            fluid
-            compact
-            size="small"
+          <ExternalLink
+            href={generateUrl({
+              path: `/reviews/list`,
+              query: qs.stringify({
+                region_id: regionId,
+                resource_id: resourceId,
+                resource_type: resourceType,
+                sorting_option: sortingOption,
+                _triple_no_navbar: true,
+              }),
+            })}
+            target="new"
+            allowSource="app-with-session"
             onClick={
               onFullListButtonClick
-                ? (e) => onFullListButtonClick(e, sortingOption)
+                ? () => onFullListButtonClick(sortingOption)
                 : handleFullListButtonClick
             }
           >
-            {reviewsCount - SHORTENED_REVIEWS_COUNT_PER_PAGE}개 리뷰 더보기
-          </Button>
+            <a>
+              <Button basic fluid compact size="small">
+                {reviewsCount - SHORTENED_REVIEWS_COUNT_PER_PAGE}개 리뷰 더보기
+              </Button>
+            </a>
+          </ExternalLink>
         </Container>
       ) : null}
 
       {shortened ? (
-        <MileageButton
-          onClick={(e) => {
-            trackEvent({
-              ga: ['리뷰_여행자클럽선택'],
-              fa: {
-                action: '리뷰_여행자클럽선택',
-                item_id: resourceId,
-              },
-            })
-            e.preventDefault()
-            if (isPublic) {
-              window.location.href = `/pages/mileage-intro.html`
-            } else {
-              navigateMileageIntro()
-            }
-          }}
-        >
-          <Text color="gray" size="small" alpha={0.6} lineHeight={1.7}>
-            리뷰 쓰면 여행자 클럽 최대 3포인트!
-          </Text>
-          <Text color="blue" size="small" lineHeight={1.7}>
-            포인트별 혜택 보기
-          </Text>
-          <BulletRight alt="포인트별 혜택 보기" />
+        <MileageButton>
+          <ExternalLink
+            href={isPublic ? '/pages/mileage-intro.html' : '/my/mileage/intro'}
+            target="new"
+            allowSource="app"
+            onClick={() => {
+              trackEvent({
+                ga: ['리뷰_여행자클럽선택'],
+                fa: {
+                  action: '리뷰_여행자클럽선택',
+                  item_id: resourceId,
+                },
+              })
+            }}
+          >
+            <a>
+              <Text color="gray" size="small" alpha={0.6} lineHeight={1.7}>
+                리뷰 쓰면 여행자 클럽 최대 3포인트!
+              </Text>
+              <Text color="blue" size="small" lineHeight={1.7}>
+                포인트별 혜택 보기
+              </Text>
+              <BulletRight alt="포인트별 혜택 보기" />
+            </a>
+          </ExternalLink>
         </MileageButton>
       ) : null}
 
@@ -401,6 +381,7 @@ function ReviewContainer({
           myReview={myReview}
           resourceType={resourceType}
           resourceId={resourceId}
+          regionId={regionId}
           notifyReviewDeleted={(resourceId, reviewId) => {
             reviewId === myReview.id && setMyReview(null)
             notifyReviewDeleted(resourceId, reviewId)
@@ -408,10 +389,7 @@ function ReviewContainer({
           onReviewEdit={() => {
             if (onReviewWrite) {
               onReviewWrite()
-              return
             }
-
-            editReview({ regionId, resourceId, resourceType })
           }}
           onReviewDelete={onReviewDelete}
         />

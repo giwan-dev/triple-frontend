@@ -1,6 +1,11 @@
 import React from 'react'
 import ActionSheet from '@titicaca/action-sheet'
-import { useURIHash, useHistoryFunctions } from '@titicaca/react-contexts'
+import {
+  useURIHash,
+  useHistoryFunctions,
+  useUserAgentContext,
+} from '@titicaca/react-contexts'
+import { ExternalLink } from '@titicaca/router'
 
 import { ReviewData } from './types'
 
@@ -9,21 +14,12 @@ export const HASH_REVIEW_ACTION_SHEET =
 
 export default function OthersReviewActionSheet({
   selectedReview,
-  onReportReview,
 }: {
   selectedReview?: ReviewData | null
-  onReportReview: (reportingReviewId: string) => void
 }) {
   const uriHash = useURIHash()
+  const { isPublic } = useUserAgentContext()
   const { back } = useHistoryFunctions()
-
-  const handleReportClick = () => {
-    if (selectedReview) {
-      onReportReview(selectedReview.id)
-    }
-
-    back()
-  }
 
   return (
     <ActionSheet
@@ -31,8 +27,19 @@ export default function OthersReviewActionSheet({
       onClose={back}
       zTier={3}
     >
-      <ActionSheet.Item icon="report" onClick={handleReportClick}>
-        신고하기
+      <ActionSheet.Item
+        icon="report"
+        onClick={() => {
+          back()
+        }}
+      >
+        <ExternalLink
+          href={`/reviews/${selectedReview?.id}/report`}
+          target={isPublic ? 'current' : 'new'}
+          allowSource="all"
+        >
+          <a>신고하기</a>
+        </ExternalLink>
       </ActionSheet.Item>
     </ActionSheet>
   )

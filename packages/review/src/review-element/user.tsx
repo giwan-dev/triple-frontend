@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, MouseEventHandler } from 'react'
 import styled from 'styled-components'
 import { Container, Text } from '@titicaca/core-elements'
+import { ExternalLink } from '@titicaca/router'
 
 import { UserData } from '../types'
 
@@ -24,6 +25,7 @@ const Badge = styled.img`
 
 export default function User({
   user: {
+    uid,
     photo,
     name,
     userBoard: { reviewsV2 },
@@ -32,7 +34,7 @@ export default function User({
   },
   onClick,
 }: {
-  onClick?: MouseEventHandler
+  onClick?: () => void
   user: UserData
 }) {
   const {
@@ -42,7 +44,16 @@ export default function User({
 
   return (
     <Container padding={{ bottom: 2 }} display="flex">
-      <UserPhoto src={photo} onClick={onClick} />
+      <ExternalLink
+        href={`/users/${uid}`}
+        target="new"
+        allowSource="app-with-session"
+        onClick={onClick}
+      >
+        <a>
+          <UserPhoto src={photo} />
+        </a>
+      </ExternalLink>
       {badge && <Badge src={badge.icon.imageUrl} />}
       <div>
         <Name onClick={onClick}>{name}</Name>

@@ -2,7 +2,21 @@ import { Meta, Story, Preview } from '@storybook/addon-docs/blocks'
 import { boolean, withKnobs, text } from '@storybook/addon-knobs'
 import BookingCompletion from '@titicaca/booking-completion'
 
-<Meta title="booking-completion / Booking Complete" decorators={[withKnobs]} />
+import {
+  historyProviderDecorator,
+  sessionContextProviderDecorator,
+  userAgentProviderDecorator,
+} from '../../decorators'
+
+<Meta
+  title="booking-completion / Booking Complete"
+  decorators={[
+    withKnobs,
+    historyProviderDecorator,
+    sessionContextProviderDecorator,
+    userAgentProviderDecorator,
+  ]}
+/>
 
 # Booking Complete
 

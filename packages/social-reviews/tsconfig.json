@@ -14,6 +14,12 @@
     },
     {
       "path": "../react-contexts"
+    },
+    {
+      "path": "../router"
+    },
+    {
+      "path": "../react-contexts"
     }
   ]
 }

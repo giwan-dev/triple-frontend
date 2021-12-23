@@ -1,10 +1,9 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Container, Text, Button } from '@titicaca/core-elements'
-import { useHistoryFunctions } from '@titicaca/react-contexts'
+import { useUserAgentContext } from '@titicaca/react-contexts'
 import styled from 'styled-components'
 import { TranslatedProperty } from '@titicaca/type-definitions'
-import { useAppCallback } from '@titicaca/ui-flow'
-import { TransitionType } from '@titicaca/modals'
+import { ExternalLink } from '@titicaca/router'
 
 interface Region {
   id: string
@@ -57,15 +56,7 @@ function BookingCompletion({
   descriptions,
   region,
 }: BookingCompletionProps) {
-  const { navigate } = useHistoryFunctions()
-
-  const handleMoveToRegion = useAppCallback(
-    TransitionType.General,
-    useCallback(() => {
-      onMoveToRegion()
-      navigate(`/regions/${region?.id}`)
-    }, [navigate, onMoveToRegion, region?.id]),
-  )
+  const { isPublic } = useUserAgentContext()
 
   return (
     <>
@@ -113,24 +104,40 @@ function BookingCompletion({
               >
                 {myBookingButtonTitle || '내 예약에서 확인'}
               </Button>
-              <Button
-                basic
-                inverted
-                color="gray"
-                size="small"
-                onClick={() => {
-                  onMoveToMain()
-                  navigate('/main')
-                }}
+              <ExternalLink
+                href="/main"
+                target={isPublic ? 'current' : 'new'}
+                allowSource="all"
               >
-                트리플 홈으로 가기
-              </Button>
+                <a>
+                  <Button
+                    basic
+                    inverted
+                    color="gray"
+                    size="small"
+                    onClick={() => {
+                      onMoveToMain && onMoveToMain()
+                    }}
+                  >
+                    트리플 홈으로 가기
+                  </Button>
+                </a>
+              </ExternalLink>
             </Button.Group>
           </Container>
           {region ? (
-            <GrayButton fluid margin={{ top: 6 }} onClick={handleMoveToRegion}>
-              {region.names.ko || region.names.en} 여행 준비하러 가기
-            </GrayButton>
+            <ExternalLink
+              href={`/regions/${region.id}`}
+              target="new"
+              allowSource="app-with-session"
+              onClick={() => onMoveToRegion && onMoveToRegion()}
+            >
+              <a>
+                <GrayButton fluid margin={{ top: 6 }}>
+                  {region.names.ko || region.names.en} 여행 준비하러 가기
+                </GrayButton>
+              </a>
+            </ExternalLink>
           ) : null}
 
           {onAddToSchedule ? (

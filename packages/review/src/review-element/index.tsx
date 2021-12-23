@@ -14,8 +14,10 @@ import {
   useEventTrackingContext,
   useUserAgentContext,
 } from '@titicaca/react-contexts'
-import { ImageMeta } from '@titicaca/type-definitions'
 import { useSessionCallback } from '@titicaca/ui-flow'
+import { ExternalLink } from '@titicaca/router'
+import { generateUrl } from '@titicaca/view-utilities'
+import qs from 'qs'
 
 import { useReviewLikesContext } from '../review-likes-context'
 import { ReviewData } from '../types'
@@ -26,30 +28,19 @@ import Comment from './comment'
 import FoldableComment from './foldable-comment'
 import Images from './images'
 
-type ReviewEventHandler<T = Element, E = Event> = (
-  e: React.SyntheticEvent<T, E>,
-  review: ReviewData,
-) => void
+type ReviewHandler = (review: ReviewData) => void
 
 export interface ReviewElementProps {
   review: ReviewData
+  regionId?: string
   isMyReview: boolean
   index: number
-  onUserClick?: ReviewEventHandler
-  onUnfoldButtonClick?: ReviewEventHandler
-  onMenuClick: ReviewEventHandler
-  onImageClick: (
-    e: React.SyntheticEvent,
-    review: ReviewData,
-    image: ImageMeta,
-    index: number,
-  ) => void
-  onReviewClick: (e: React.SyntheticEvent, reviewId: string) => void
-  onMessageCountClick: (
-    e: React.SyntheticEvent,
-    reviewId: string,
-    resourceType: string,
-  ) => void
+  onUserClick?: ReviewHandler
+  onUnfoldButtonClick?: ReviewHandler
+  onMenuClick: ReviewHandler
+  onImageClick: (review: ReviewData, index: number) => void
+  onReviewClick: (reviewId: string) => void
+  onMessageCountClick: (reviewId: string, resourceType: string) => void
   onShow?: (index: number) => void
   reviewRateDescriptions?: string[]
   DateFormatter?: ComponentType<{ date: string }>
@@ -106,6 +97,7 @@ const MESSAGE_COUNT_APP_VERSION = '5.5.0'
 
 export default function ReviewElement({
   review,
+  regionId,
   review: {
     user,
     blindedAt,
@@ -178,58 +170,79 @@ export default function ReviewElement({
       <List.Item style={{ paddingTop: 6 }}>
         <User
           user={user}
-          onClick={onUserClick && ((e) => onUserClick(e, review))}
+          onClick={onUserClick && (() => onUserClick(review))}
         />
         {!blindedAt && !!rating ? <Score score={rating} /> : null}
-        <Content
-          onClick={(e: React.SyntheticEvent) => onReviewClick(e, review.id)}
-        >
-          {blindedAt ? (
-            '신고가 접수되어 블라인드 처리되었습니다.'
-          ) : comment ? (
-            unfolded ? (
-              comment
-            ) : (
-              <FoldableComment
-                comment={comment}
-                hasImage={(media || []).length > 0}
-                onUnfoldButtonClick={(e) => {
-                  if (
-                    appVersion &&
-                    semver.gte(appVersion, LOUNGE_APP_VERSION)
-                  ) {
-                    return
-                  }
+        <Content>
+          <div
+            onClick={(e) => {
+              if (appVersion && semver.gte(appVersion, LOUNGE_APP_VERSION)) {
+                e.preventDefault()
+              }
+            }}
+          >
+            <ExternalLink
+              href={generateUrl({
+                path: `/reviews/${review.id}/detail`,
+                query: qs.stringify({
+                  region_id: regionId,
+                  resource_id: resourceId,
+                }),
+              })}
+              target={isPublic ? 'current' : 'new'}
+              allowSource="all"
+              onClick={() => onReviewClick(review.id)}
+            >
+              <a>
+                {blindedAt ? (
+                  '신고가 접수되어 블라인드 처리되었습니다.'
+                ) : comment ? (
+                  unfolded ? (
+                    comment
+                  ) : (
+                    <FoldableComment
+                      comment={comment}
+                      hasImage={(media || []).length > 0}
+                      onUnfoldButtonClick={() => {
+                        if (
+                          appVersion &&
+                          semver.gte(appVersion, LOUNGE_APP_VERSION)
+                        ) {
+                          return
+                        }
 
-                  trackEvent({
-                    ga: ['리뷰_리뷰글더보기'],
-                    fa: {
-                      action: '리뷰_리뷰글더보기',
-                      item_id: resourceId,
-                    },
-                  })
-                  setUnfolded(true)
+                        trackEvent({
+                          ga: ['리뷰_리뷰글더보기'],
+                          fa: {
+                            action: '리뷰_리뷰글더보기',
+                            item_id: resourceId,
+                          },
+                        })
+                        setUnfolded(true)
 
-                  onUnfoldButtonClick && onUnfoldButtonClick(e, review)
-                }}
-              />
-            )
-          ) : (
-            <RateDescription
-              rating={rating}
-              reviewRateDescriptions={reviewRateDescriptions}
-            />
-          )}
-          {!blindedAt && media && media.length > 0 ? (
-            <Container margin={{ top: 10 }}>
-              <Images
-                images={media}
-                onImageClick={(e) =>
-                  onImageClick(e, review, media[index], index)
-                }
-              />
-            </Container>
-          ) : null}
+                        onUnfoldButtonClick && onUnfoldButtonClick(review)
+                      }}
+                    />
+                  )
+                ) : (
+                  <RateDescription
+                    rating={rating}
+                    reviewRateDescriptions={reviewRateDescriptions}
+                  />
+                )}
+                {!blindedAt && media && media.length > 0 ? (
+                  <Container margin={{ top: 10 }}>
+                    <Images
+                      review={review}
+                      images={media}
+                      image={media[index]}
+                      onImageClick={() => onImageClick(review, index)}
+                    />
+                  </Container>
+                ) : null}
+              </a>
+            </ExternalLink>
+          </div>
         </Content>
         <Meta>
           {!blindedAt ? (
@@ -253,13 +266,28 @@ export default function ReviewElement({
               margin={{ top: 5 }}
               padding={{ top: 2, bottom: 2, left: 20, right: 0 }}
               isCommaVisible={!blindedAt}
-              onClick={(e: React.SyntheticEvent) =>
-                onMessageCountClick(e, review.id, resourceType)
-              }
             >
-              {replyBoard
-                ? replyBoard.rootMessagesCount + replyBoard.childMessagesCount
-                : 0}
+              <ExternalLink
+                href={generateUrl({
+                  path: `/reviews/${review.id}/detail?#reply`,
+                  query: qs.stringify({
+                    reviewId: review.id,
+                    regionId,
+                    resourceId,
+                    anchor: 'reply',
+                  }),
+                })}
+                target="new"
+                allowSource="app-with-session"
+                onClick={() => onMessageCountClick(review.id, resourceType)}
+              >
+                <a>
+                  {replyBoard
+                    ? replyBoard.rootMessagesCount +
+                      replyBoard.childMessagesCount
+                    : 0}
+                </a>
+              </ExternalLink>
             </MessageCount>
           ) : null}
 
@@ -268,7 +296,7 @@ export default function ReviewElement({
               {DateFormatter ? <DateFormatter date={createdAt} /> : createdAt}
               <MoreIcon
                 src="https://assets.triple.guide/images/btn-review-more@4x.png"
-                onClick={(e) => onMenuClick(e, review)}
+                onClick={() => onMenuClick(review)}
               />
             </Date>
           ) : null}
@@ -286,12 +314,10 @@ function Score({ score }: { score?: number }) {
   )
 }
 
-function Content({ onClick, children }: PropsWithChildren<{ onClick?: any }>) {
+function Content({ children }: PropsWithChildren<{}>) {
   return (
     <Container margin={{ top: 6 }} clearing>
-      <a onClick={onClick}>
-        <Comment>{children}</Comment>
-      </a>
+      <Comment>{children}</Comment>
     </Container>
   )
 }

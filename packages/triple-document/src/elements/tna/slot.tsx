@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Container, H1, List, Button } from '@titicaca/core-elements'
-import {
-  useEventTrackingContext,
-  useHistoryFunctions,
-} from '@titicaca/react-contexts'
+import { useEventTrackingContext } from '@titicaca/react-contexts'
 import { gray50 } from '@titicaca/color-palette'
 
 import { TNAProductData } from './types'
@@ -19,7 +16,6 @@ export function Slot({
   products: TNAProductData[]
 }) {
   const { trackEvent } = useEventTrackingContext()
-  const { navigate } = useHistoryFunctions()
 
   const [showMore, setShowMore] = useState(false)
 
@@ -34,9 +30,8 @@ export function Slot({
           position: index,
         },
       })
-      navigate(`/tna/products/${product.id}`)
     },
-    [slotId, trackEvent, navigate],
+    [slotId, trackEvent],
   )
 
   const handleIntersect = useCallback(

@@ -1,15 +1,11 @@
 import React, { useCallback, useState } from 'react'
-import moment from 'moment'
 import { List } from '@titicaca/core-elements'
 import {
   useUserAgentContext,
   useEventTrackingContext,
   useHistoryFunctions,
 } from '@titicaca/react-contexts'
-import { TransitionType } from '@titicaca/modals'
-import { useAppCallback, useSessionCallback } from '@titicaca/ui-flow'
-import { ImageMeta } from '@titicaca/type-definitions'
-import semver from 'semver'
+import { useSessionCallback } from '@titicaca/ui-flow'
 import { Timestamp } from '@titicaca/view-utilities'
 
 import ReviewElement, { ReviewElementProps } from './review-element'
@@ -18,9 +14,6 @@ import OthersReviewActionSheet, {
   HASH_REVIEW_ACTION_SHEET,
 } from './others-review-action-sheet'
 import { AppNativeActionProps, ReviewData } from './types'
-import { useClientActions } from './use-client-actions'
-
-const LOUNGE_APP_VERSION = '4.3.0'
 
 export default function ReviewsList({
   myReview,
@@ -36,6 +29,9 @@ export default function ReviewsList({
   reviews: ReviewData[]
   fetchNext?: () => void
   regionId?: string
+  /**
+   * @deprecated env context를 사용하면 생략 가능
+   */
   resourceId: string
   maxLength?: number
   reviewRateDescriptions?: string[]
@@ -47,44 +43,30 @@ export default function ReviewsList({
   const { isPublic } = useUserAgentContext()
   const { trackEvent } = useEventTrackingContext()
   const { push } = useHistoryFunctions()
-  const appVersion = semver.coerce(useUserAgentContext()?.app?.version)
-  const {
-    navigateUserDetail,
-    navigateImages,
-    navigateReviewDetail,
-    reportReview,
-  } = useClientActions()
 
-  const handleUserClick: ReviewElementProps['onUserClick'] = useSessionCallback(
-    useCallback(
-      (
-        e: React.SyntheticEvent,
-        { user: { uid, unregister, mileage } }: ReviewData,
-      ) => {
-        const { level } = mileage || { level: 0 }
-        trackEvent({
-          ga: ['리뷰 프로필'],
-          fa: {
-            action: '리뷰_프로필',
-            item_id: resourceId,
-            user_id: uid,
-            level,
-          },
-        })
+  const handleUserClick: ReviewElementProps['onUserClick'] = useCallback(
+    ({ user: { uid, unregister, mileage } }: ReviewData) => {
+      const { level } = mileage || { level: 0 }
+      trackEvent({
+        ga: ['리뷰 프로필'],
+        fa: {
+          action: '리뷰_프로필',
+          item_id: resourceId,
+          user_id: uid,
+          level,
+        },
+      })
 
-        if (unregister) {
-          showToast('탈퇴한 사용자입니다.')
-        } else {
-          navigateUserDetail(uid)
-        }
-      },
-      [trackEvent, resourceId, showToast, navigateUserDetail],
-    ),
+      if (unregister) {
+        showToast('탈퇴한 사용자입니다.')
+      }
+    },
+    [trackEvent, resourceId, showToast],
   )
 
   const handleMenuClick: ReviewElementProps['onMenuClick'] = useSessionCallback(
     useCallback(
-      (e: React.SyntheticEvent, review: ReviewData) => {
+      (review: ReviewData) => {
         if (!isPublic) {
           if (myReview && review.id === myReview.id) {
             push(HASH_MY_REVIEW_ACTION_SHEET)
@@ -98,107 +80,52 @@ export default function ReviewsList({
     ),
   )
 
-  const handleImageClick: ReviewElementProps['onImageClick'] = useAppCallback(
-    TransitionType.ReviewThumbnail,
-    useSessionCallback(
-      useCallback(
-        (
-          e: React.SyntheticEvent,
-          { user: { name }, comment, media, createdAt }: ReviewData,
-          image: ImageMeta,
-          index,
-        ) => {
-          if (
-            (appVersion && semver.gte(appVersion, LOUNGE_APP_VERSION)) ||
-            !media
-          ) {
-            return
-          }
-          trackEvent({
-            ga: ['리뷰_리뷰사진썸네일'],
-            fa: {
-              action: '리뷰_리뷰사진썸네일',
-              item_id: resourceId,
-              photo_id: media[index].id,
-            },
-          })
+  const handleImageClick: ReviewElementProps['onImageClick'] = useCallback(
+    ({ media }: ReviewData, index) => {
+      if (!media) {
+        return
+      }
 
-          const convertImage = (convertingImage: ImageMeta) => ({
-            id: convertingImage.id,
-            title: '',
-            description: (comment || '').replace(/\n\s*\n/g, '\n'),
-            width: convertingImage.width,
-            height: convertingImage.height,
-            sourceUrl: `${name} / ${moment(createdAt).format('YYYY.M.D')}`,
-            sizes: {
-              full: convertingImage.sizes.full,
-              large: convertingImage.sizes.large,
-              small_square:
-                'smallSquare' in convertingImage.sizes
-                  ? convertingImage.sizes.smallSquare
-                  : convertingImage.sizes.small_square,
-            },
-          })
-
-          if (!media) {
-            return
-          }
-
-          navigateImages(
-            media.map(convertImage),
-            media.findIndex(({ id }) => id === image.id),
-          )
+      trackEvent({
+        ga: ['리뷰_리뷰사진썸네일'],
+        fa: {
+          action: '리뷰_리뷰사진썸네일',
+          item_id: resourceId,
+          photo_id: media[index].id,
         },
-        [appVersion, navigateImages, resourceId, trackEvent],
-      ),
-    ),
+      })
+    },
+    [resourceId, trackEvent],
   )
 
   const handleReviewClick = useCallback(
-    (e: React.SyntheticEvent, reviewId: string) => {
-      if (appVersion && semver.gte(appVersion, LOUNGE_APP_VERSION)) {
-        e.preventDefault()
-        e.stopPropagation()
-        trackEvent({
-          ga: ['리뷰_리뷰선택', resourceId],
-          fa: {
-            action: '리뷰_리뷰선택',
-            item_id: resourceId,
-            review_id: reviewId,
-          },
-        })
-        navigateReviewDetail({ reviewId, regionId, resourceId })
-      }
+    (reviewId: string) => {
+      trackEvent({
+        ga: ['리뷰_리뷰선택', resourceId],
+        fa: {
+          action: '리뷰_리뷰선택',
+          item_id: resourceId,
+          review_id: reviewId,
+        },
+      })
     },
-    [appVersion, trackEvent, resourceId, navigateReviewDetail, regionId],
+    [trackEvent, resourceId],
   )
 
-  const handleMessageCountClick = useAppCallback(
-    TransitionType.General,
-    useSessionCallback(
-      useCallback(
-        (e: React.SyntheticEvent, reviewId: string, resourceType: string) => {
-          trackEvent({
-            ga: ['리뷰_댓글', regionId],
-            fa: {
-              action: '리뷰_댓글',
-              item_id: resourceId,
-              review_id: reviewId,
-              region_id: regionId,
-              content_type: resourceType,
-            },
-          })
-
-          navigateReviewDetail({
-            reviewId,
-            regionId,
-            resourceId,
-            anchor: 'reply',
-          })
+  const handleMessageCountClick = useCallback(
+    (reviewId: string, resourceType: string) => {
+      trackEvent({
+        ga: ['리뷰_댓글', regionId],
+        fa: {
+          action: '리뷰_댓글',
+          item_id: resourceId,
+          review_id: reviewId,
+          region_id: regionId,
+          content_type: resourceType,
         },
-        [navigateReviewDetail, regionId, resourceId, trackEvent],
-      ),
-    ),
+      })
+    },
+    [regionId, resourceId, trackEvent],
   )
 
   const handleShow = fetchNext
@@ -219,6 +146,7 @@ export default function ReviewsList({
             key={review.id}
             index={i}
             review={review}
+            regionId={regionId}
             reviewRateDescriptions={reviewRateDescriptions}
             onUserClick={isPublic ? undefined : handleUserClick}
             onMenuClick={handleMenuClick}
@@ -232,10 +160,7 @@ export default function ReviewsList({
         ))}
       </List>
 
-      <OthersReviewActionSheet
-        selectedReview={selectedReview}
-        onReportReview={reportReview}
-      />
+      <OthersReviewActionSheet selectedReview={selectedReview} />
     </>
   )
 }

@@ -6,10 +6,14 @@ import {
 } from '@titicaca/modals'
 import { select } from '@storybook/addon-knobs'
 
-import { historyProviderDecorator } from '../../decorators'
+import {
+  historyProviderDecorator,
+  sessionContextProviderDecorator,
+} from '../../decorators'
 
 export default {
   title: 'modals / TransitionModal',
+  decorators: [sessionContextProviderDecorator],
 }
 
 export function BaseTransitionModal() {

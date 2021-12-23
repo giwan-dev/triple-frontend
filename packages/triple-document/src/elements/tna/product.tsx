@@ -5,6 +5,7 @@ import { StaticIntersectionObserver } from '@titicaca/intersection-observer'
 import { OverlayScrapButton } from '@titicaca/scrap-button'
 import semver from 'semver'
 import { useUserAgentContext } from '@titicaca/react-contexts'
+import { ExternalLink } from '@titicaca/router'
 
 import { TNAProductData, DomesticArea } from './types'
 import { generateCoupon } from './helpers'
@@ -121,85 +122,103 @@ export function TnaProductWithPrice({
   )
 
   return (
-    <StaticIntersectionObserver onChange={handleIntersectionChange}>
-      <Container onClick={handleClick} clearing>
-        <Image>
-          <Image.FixedDimensionsFrame size="small" width={90} floated="left">
-            {heroImage ? (
-              <Image.Img src={heroImage} alt={`${title}의 썸네일`} />
-            ) : (
-              <Image.Placeholder src={PLACEHOLDER_IMAGE_URL} />
-            )}
-          </Image.FixedDimensionsFrame>
-        </Image>
-        {canScrap && (
-          <Container position="absolute" positioning={{ top: 3, left: 51 }}>
-            <OverlayScrapButton
-              resource={{ id, scraped, type: 'tna' }}
-              size={36}
-            />
-          </Container>
-        )}
-
-        <Container margin={{ left: 104 }}>
-          <Text bold size="large" color="gray" ellipsis>
-            {title}
-          </Text>
-
-          {primaryDomesticArea && (
-            <Text color="gray400" size="tiny" margin={{ top: 4 }}>
-              {primaryDomesticArea.displayName}
-            </Text>
-          )}
-
-          {tags && tags.length > 0 && (
-            <Container margin={{ top: 3 }}>
-              {tags.map(({ text, type, style }, i) => (
-                <Tag
-                  key={i}
-                  type={type}
-                  style={style}
-                  margin={{ top: 4, right: i < tags.length - 1 ? 4 : 0 }}
-                >
-                  {text}
-                </Tag>
-              ))}
-            </Container>
-          )}
-
-          {reviewsCount ? (
-            <Container margin={{ top: 4 }}>
-              <Rating size="tiny" score={reviewRating} />
-              <Text
-                inlineBlock
-                size="tiny"
-                color="gray400"
-                lineHeight={1.08}
-                margin={{ left: 6 }}
+    <ExternalLink
+      href={`/tna/products/${product.id}`}
+      target={isPublic ? 'current' : 'new'}
+      allowSource="all"
+    >
+      <a>
+        <StaticIntersectionObserver onChange={handleIntersectionChange}>
+          <Container onClick={handleClick} clearing>
+            <Image>
+              <Image.FixedDimensionsFrame
+                size="small"
+                width={90}
+                floated="left"
               >
-                ({reviewsCount})
+                {heroImage ? (
+                  <Image.Img src={heroImage} alt={`${title}의 썸네일`} />
+                ) : (
+                  <Image.Placeholder src={PLACEHOLDER_IMAGE_URL} />
+                )}
+              </Image.FixedDimensionsFrame>
+            </Image>
+            {canScrap && (
+              <Container position="absolute" positioning={{ top: 3, left: 51 }}>
+                <OverlayScrapButton
+                  resource={{ id, scraped, type: 'tna' }}
+                  size={36}
+                />
+              </Container>
+            )}
+
+            <Container margin={{ left: 104 }}>
+              <Text bold size="large" color="gray" ellipsis>
+                {title}
               </Text>
+
+              {primaryDomesticArea && (
+                <Text color="gray400" size="tiny" margin={{ top: 4 }}>
+                  {primaryDomesticArea.displayName}
+                </Text>
+              )}
+
+              {tags && tags.length > 0 && (
+                <Container margin={{ top: 3 }}>
+                  {tags.map(({ text, type, style }, i) => (
+                    <Tag
+                      key={i}
+                      type={type}
+                      style={style}
+                      margin={{ top: 4, right: i < tags.length - 1 ? 4 : 0 }}
+                    >
+                      {text}
+                    </Tag>
+                  ))}
+                </Container>
+              )}
+
+              {reviewsCount ? (
+                <Container margin={{ top: 4 }}>
+                  <Rating size="tiny" score={reviewRating} />
+                  <Text
+                    inlineBlock
+                    size="tiny"
+                    color="gray400"
+                    lineHeight={1.08}
+                    margin={{ left: 6 }}
+                  >
+                    ({reviewsCount})
+                  </Text>
+                </Container>
+              ) : null}
+
+              {salePrice !== undefined ? (
+                <Pricing
+                  salePrice={salePrice}
+                  basePrice={
+                    !!basePrice && salePrice !== basePrice
+                      ? basePrice
+                      : undefined
+                  }
+                />
+              ) : null}
+
+              {hasCoupon && (
+                <PricePolicyCouponInfo
+                  hasOnlyExpectedApplicableCoupon={
+                    hasOnlyExpectedApplicableCoupon
+                  }
+                  hasAmountAfterUsingCouponPrice={
+                    hasAmountAfterUsingCouponPrice
+                  }
+                  displayPricePolicy={displayPricePolicy}
+                />
+              )}
             </Container>
-          ) : null}
-
-          {salePrice !== undefined ? (
-            <Pricing
-              salePrice={salePrice}
-              basePrice={
-                !!basePrice && salePrice !== basePrice ? basePrice : undefined
-              }
-            />
-          ) : null}
-
-          {hasCoupon && (
-            <PricePolicyCouponInfo
-              hasOnlyExpectedApplicableCoupon={hasOnlyExpectedApplicableCoupon}
-              hasAmountAfterUsingCouponPrice={hasAmountAfterUsingCouponPrice}
-              displayPricePolicy={displayPricePolicy}
-            />
-          )}
-        </Container>
-      </Container>
-    </StaticIntersectionObserver>
+          </Container>
+        </StaticIntersectionObserver>
+      </a>
+    </ExternalLink>
   )
 }

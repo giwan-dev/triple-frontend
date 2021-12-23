@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { MarginPadding } from '@titicaca/core-elements'
+import { ExternalLink } from '@titicaca/router'
 
 import VerticalEntity from './vertical-entity'
 import { Banner } from './typing'
@@ -42,12 +43,20 @@ const VerticalListView: FC<VerticalListViewProps> = ({
   return (
     <ListSection minWidth={0} padding={padding} margin={margin}>
       {banners.map((banner, index) => (
-        <VerticalEntity
+        <ExternalLink
           key={banner.id}
-          banner={banner}
-          onClick={makeBannerClickHandler(index)}
-          onIntersect={makeBannerIntersectingHandler(index)}
-        />
+          href={banner.target}
+          target="new"
+          allowSource="app"
+        >
+          <a>
+            <VerticalEntity
+              banner={banner}
+              onClick={makeBannerClickHandler(index)}
+              onIntersect={makeBannerIntersectingHandler(index)}
+            />
+          </a>
+        </ExternalLink>
       ))}
     </ListSection>
   )

@@ -6,6 +6,10 @@ import {
   useURIHash,
   useHistoryFunctions,
 } from '@titicaca/react-contexts'
+import { generateUrl } from '@titicaca/view-utilities'
+import qs from 'qs'
+
+import { ExternalLink } from '../../router/src'
 
 import { deleteReview as deleteReviewApi } from './review-api-clients'
 import { ResourceType, ReviewData, ReviewDeleteHandler } from './types'
@@ -14,6 +18,7 @@ interface MyReviewActionSheetProps {
   myReview: ReviewData
   resourceType: ResourceType
   resourceId: string
+  regionId?: string
   notifyReviewDeleted: (resourceId: string, reviewId: string) => void
   /**
    * @deprecated 리뷰 작성 함수를 자체 구현하면
@@ -33,6 +38,7 @@ export default function MyReviewActionSheet({
   myReview,
   resourceType,
   resourceId,
+  regionId,
   notifyReviewDeleted,
   onReviewEdit,
   onReviewDelete,
@@ -68,7 +74,20 @@ export default function MyReviewActionSheet({
       >
         {!myReview.blindedAt ? (
           <ActionSheet.Item icon="review" onClick={onReviewEdit}>
-            수정하기
+            <ExternalLink
+              href={generateUrl({
+                path: `/reviews/edit`,
+                query: qs.stringify({
+                  region_id: regionId,
+                  resource_type: resourceType,
+                  resource_id: resourceId,
+                }),
+              })}
+              allowSource="app"
+              target="new"
+            >
+              <a>수정하기</a>
+            </ExternalLink>
           </ActionSheet.Item>
         ) : null}
         <ActionSheet.Item icon="delete" onClick={handleDeleteMenuClick}>

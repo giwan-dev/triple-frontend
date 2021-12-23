@@ -2,11 +2,14 @@ import { Responsive } from '@titicaca/core-elements'
 import { ImageMeta } from '@titicaca/type-definitions'
 import React from 'react'
 
+import { ReviewData } from '../../types'
+
 import {
   ImageElement,
   SquareFrame,
   ImagesContainer,
   FlexItemContainer,
+  ExternalLinkImage,
 } from './elements'
 
 const IMAGES_CONTAINER_HEIGHTS = [217, 292, 328]
@@ -14,10 +17,14 @@ const IMAGE_HEIGHTS = [217, 143, 105]
 
 export default function MultipleImages({
   images,
+  image,
+  review,
   onImageClick,
 }: {
   images: ImageMeta[]
-  onImageClick: (e: React.SyntheticEvent, index: number) => void
+  image: ImageMeta
+  review: ReviewData
+  onImageClick: () => void
 }) {
   const [firstImage, ...restImages] = images
 
@@ -27,12 +34,17 @@ export default function MultipleImages({
         <ImagesContainer flexDirection="row">
           <FlexItemContainer flexShrink={1} margin={{ right: 5 }}>
             <SquareFrame>
-              <ImageElement
-                src={firstImage.sizes.large.url}
-                fullHeight
-                absolute
-                onClick={(e) => onImageClick(e, 0)}
-              />
+              <ExternalLinkImage
+                review={review}
+                image={image}
+                onClick={onImageClick}
+              >
+                <ImageElement
+                  src={firstImage.sizes.large.url}
+                  fullHeight
+                  absolute
+                />
+              </ExternalLinkImage>
             </SquareFrame>
           </FlexItemContainer>
 
@@ -45,12 +57,13 @@ export default function MultipleImages({
                   margin={{ bottom: index < restImages.length - 1 ? 5 : 0 }}
                 >
                   <SquareFrame>
-                    <ImageElement
-                      src={sizes.large.url}
-                      absolute
-                      fullHeight
-                      onClick={(e) => onImageClick(e, index)}
-                    />
+                    <ExternalLinkImage
+                      review={review}
+                      image={image}
+                      onClick={onImageClick}
+                    >
+                      <ImageElement src={sizes.large.url} absolute fullHeight />
+                    </ExternalLinkImage>
                   </SquareFrame>
                 </FlexItemContainer>
               ))}
@@ -64,37 +77,51 @@ export default function MultipleImages({
           height={IMAGES_CONTAINER_HEIGHTS[restImages.length - 1]}
         >
           <FlexItemContainer flexShrink={1} margin={{ right: 9 }}>
-            <ImageElement
-              src={firstImage.sizes.large.url}
-              fullHeight
-              onClick={(e) => onImageClick(e, 0)}
-            />
+            <ExternalLinkImage
+              review={review}
+              image={image}
+              onClick={onImageClick}
+            >
+              <ImageElement src={firstImage.sizes.large.url} fullHeight />
+            </ExternalLinkImage>
           </FlexItemContainer>
 
           <FlexItemContainer flexShrink={restImages.length}>
             <Responsive maxWidth={767}>
               <ImagesContainer flexDirection="column">
                 {restImages.map(({ id, sizes }, index) => (
-                  <ImageElement
-                    key={`review.img.${id}.${index}`}
-                    src={sizes.large.url}
-                    height={IMAGE_HEIGHTS[restImages.length - 1]}
-                    onClick={(e) => onImageClick(e, index)}
-                    margin={{ bottom: index < restImages.length - 1 ? 6 : 0 }}
-                  />
+                  <ExternalLinkImage
+                    key={id}
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement
+                      key={`review.img.${id}.${index}`}
+                      src={sizes.large.url}
+                      height={IMAGE_HEIGHTS[restImages.length - 1]}
+                      margin={{ bottom: index < restImages.length - 1 ? 6 : 0 }}
+                    />
+                  </ExternalLinkImage>
                 ))}
               </ImagesContainer>
             </Responsive>
             <Responsive minWidth={768}>
               <ImagesContainer flexDirection="column">
                 {restImages.map(({ id, sizes }, index) => (
-                  <ImageElement
-                    key={`review.img.${id}.${index}`}
-                    src={sizes.large.url}
-                    height={IMAGE_HEIGHTS[restImages.length - 1]}
-                    onClick={(e) => onImageClick(e, index)}
-                    margin={{ bottom: index < restImages.length - 1 ? 6 : 0 }}
-                  />
+                  <ExternalLinkImage
+                    key={id}
+                    review={review}
+                    image={image}
+                    onClick={onImageClick}
+                  >
+                    <ImageElement
+                      key={`review.img.${id}.${index}`}
+                      src={sizes.large.url}
+                      height={IMAGE_HEIGHTS[restImages.length - 1]}
+                      margin={{ bottom: index < restImages.length - 1 ? 6 : 0 }}
+                    />
+                  </ExternalLinkImage>
                 ))}
               </ImagesContainer>
             </Responsive>

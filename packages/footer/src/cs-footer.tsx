@@ -10,6 +10,10 @@ const SupportContainer = styled.footer`
   padding: 32px 30px 0 30px;
 `
 
+/**
+ * @deprecated
+ * https://triple.guide/cs-bridge/entry 트리플 고객센터를 이용해주세요.
+ */
 export default function CSFooter({
   service,
   type,

@@ -22,6 +22,8 @@
     "@titicaca/map": "^4.1.4",
     "@titicaca/modals": "^4.1.4",
     "@titicaca/poi-list-elements": "^4.1.4",
+    "@titicaca/react-contexts": "^4.1.4",
+    "@titicaca/router": "^4.1.4",
     "@titicaca/scrap-button": "^4.1.4",
     "@titicaca/standard-action-handler": "^4.1.4",
     "@titicaca/triple-media": "^4.1.4",

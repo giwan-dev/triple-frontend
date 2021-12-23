@@ -3,6 +3,7 @@ import { Text } from '@titicaca/core-elements'
 import { Modal, Alert } from '@titicaca/modals'
 import styled from 'styled-components'
 import { useURIHash, useHistoryFunctions } from '@titicaca/react-contexts'
+import { ExternalLink } from '@titicaca/router'
 
 type HashKeyValue = {
   [hash: string]: string
@@ -65,7 +66,7 @@ const CouponIcon = styled.img`
 
 export function CouponModal({ identifier }: { identifier: string }) {
   const uriHash = useURIHash()
-  const { back, navigate } = useHistoryFunctions()
+  const { back } = useHistoryFunctions()
 
   const modalHash = uriHash.replace(`${identifier}.`, '')
 
@@ -111,18 +112,17 @@ export function CouponModal({ identifier }: { identifier: string }) {
         <Modal.Action color="gray" onClick={back}>
           취소
         </Modal.Action>
-        <Modal.Action
-          color="blue"
-          onClick={() => {
-            back()
-            navigate(
-              `/inlink?path=${encodeURIComponent(
-                '/benefit/coupons/my?_triple_no_navbar',
-              )}`,
-            )
-          }}
-        >
-          {CONFIRM_MESSAGE_TYPES[modalHash]}
+        <Modal.Action color="blue">
+          <ExternalLink
+            href="/benefit/coupons/my?_triple_no_navbar"
+            target="new"
+            allowSource="app-with-session"
+            onClick={() => {
+              back()
+            }}
+          >
+            <a>{CONFIRM_MESSAGE_TYPES[uriHash]}</a>
+          </ExternalLink>
         </Modal.Action>
       </Modal.Actions>
     </Modal>

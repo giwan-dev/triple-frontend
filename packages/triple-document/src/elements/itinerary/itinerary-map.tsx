@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Container } from '@titicaca/core-elements'
 import MapView, {
   HotelCircleMarker,
@@ -19,24 +19,11 @@ type Props = {
   day: Itinerary['day']
   /** 추천 코스 POI 목록 */
   items: Itinerary['items']
-  /** 지도상 마커 클릭 핸들러 */
-  onClickMarker: (poi: ItineraryItemType['poi']) => void
 }
 
-export default function ItineraryMap({ onClickMarker, items }: Props) {
+export default function ItineraryMap({ items }: Props) {
   const { googleMapsApiKey } = useEnv()
   const { totalPois, polyline, pois, mapOptions, bounds } = useMapData(items)
-
-  const generateClickMarkerHandle = useCallback(
-    (poi: ItineraryItemType['poi']) => (e: MouseEvent) => {
-      e.preventDefault()
-
-      if (onClickMarker) {
-        onClickMarker(poi)
-      }
-    },
-    [onClickMarker],
-  )
 
   return (
     <Container width="100%" height={180}>
@@ -48,7 +35,7 @@ export default function ItineraryMap({ onClickMarker, items }: Props) {
             googleMapsApiKey,
           }}
         >
-          {pois.map(({ position, poi: { type }, poi }, i) => {
+          {pois.map(({ position, poi: { type } }, i) => {
             const CircleMarker = ItineraryTypeCircleMarker(type)
 
             return (
@@ -58,7 +45,6 @@ export default function ItineraryMap({ onClickMarker, items }: Props) {
                 width={22}
                 height={22}
                 position={position}
-                onClick={generateClickMarkerHandle(poi)}
               >
                 <strong>{i + 1}</strong>
               </CircleMarker>
