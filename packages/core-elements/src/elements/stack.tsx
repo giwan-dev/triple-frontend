@@ -1,5 +1,5 @@
 import React from 'react'
-import { css } from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Container, { ContainerProps } from './container'
 
@@ -27,6 +27,10 @@ const horizontalStyle = css`
   }
 `
 
+const StyledContainer = styled(Container)<{ $horizontal?: boolean }>`
+  ${({ $horizontal }) => ($horizontal ? horizontalStyle : veritcalStyle)}
+`
+
 export interface StackProps extends ContainerProps {
   vertical?: boolean
   horizontal?: boolean
@@ -42,17 +46,11 @@ export interface StackProps extends ContainerProps {
  * - 가로형
  * <Stack horizontal>...</Stack>
  */
-function Stack({ css: _css, children, horizontal, ...props }: StackProps) {
+function Stack({ children, horizontal, ...props }: StackProps) {
   return (
-    <Container
-      css={css`
-        ${horizontal ? horizontalStyle : veritcalStyle}
-        ${_css}
-      `}
-      {...props}
-    >
+    <StyledContainer $horizontal={horizontal} {...props}>
       {children}
-    </Container>
+    </StyledContainer>
   )
 }
 

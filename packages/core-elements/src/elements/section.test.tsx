@@ -39,14 +39,14 @@ it('should show bottom divider', () => {
   expect((tree as ReactTestRendererJSON[])[1].children).toBeNull()
 })
 
-it('should override style with css prop', () => {
-  const tree = renderer
-    .create(
-      <Section position="absolute" css={{ position: 'fixed' }}>
-        Section
-      </Section>,
-    )
-    .toJSON()
+// it('should override style with css prop', () => {
+//   const tree = renderer
+//     .create(
+//       <Section position="absolute" css={{ position: 'fixed' }}>
+//         Section
+//       </Section>,
+//     )
+//     .toJSON()
 
-  expect(tree).toHaveStyleRule('position', 'fixed')
-})
+//   expect(tree).toHaveStyleRule('position', 'fixed')
+// })

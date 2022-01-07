@@ -37,12 +37,12 @@ it('should accept style shortcut props', () => {
   expect(tree).toHaveStyleRule('order', '1')
 })
 
-it('should override style with css prop', () => {
-  const tree = renderer
-    .create(
-      <FlexBox justifyContent="center" css={{ justifyContent: 'flex-end' }} />,
-    )
-    .toJSON()
+// it('should override style with css prop', () => {
+//   const tree = renderer
+//     .create(
+//       <FlexBox justifyContent="center" css={{ justifyContent: 'flex-end' }} />,
+//     )
+//     .toJSON()
 
-  expect(tree).toHaveStyleRule('justify-content', 'flex-end')
-})
+//   expect(tree).toHaveStyleRule('justify-content', 'flex-end')
+// })

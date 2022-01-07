@@ -76,10 +76,9 @@ const Text = styled.div<TextProps>(
   textStyleMixin,
   ellipsisMixin,
   maxLinesMixin,
-  (props) => props.css,
 )
 
-interface TextTitleBaseProps extends CSSProps {
+interface TextTitleBaseProps {
   margin?: MarginPadding
 }
 
@@ -90,14 +89,13 @@ const TextTitleBase = styled(Text)<TextTitleBaseProps>`
   font-weight: bold;
   color: #3a3a3a;
   ${marginMixin}
-  ${(props) => props.css}
 `
 
 export type TextTitleProps = React.PropsWithChildren<TextTitleBaseProps>
 
-function TextTitle({ css, children, margin }: TextTitleProps) {
+function TextTitle({ children, margin }: TextTitleProps) {
   return (
-    <TextTitleBase as="h1" css={css} margin={margin}>
+    <TextTitleBase as="h1" margin={margin}>
       {children}
     </TextTitleBase>
   )

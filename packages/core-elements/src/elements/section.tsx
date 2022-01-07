@@ -9,7 +9,6 @@ export interface SectionProps extends ContainerProps {
 }
 
 function Section({
-  css,
   children,
   divider,
   anchor,
@@ -27,7 +26,6 @@ function Section({
       {divider === 'top' && <HR2 compact />}
       <Container
         id={anchor}
-        css={css}
         centered
         clearing
         minWidth={minWidth}

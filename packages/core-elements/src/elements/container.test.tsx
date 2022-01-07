@@ -108,10 +108,10 @@ it('should accept shadow mixin', () => {
   expect(tree).toHaveStyleRule('box-shadow', '0 0 30px 0 rgba(0,0,0,0.1)')
 })
 
-it('should override style with css prop', () => {
-  const tree = renderer
-    .create(<Container position="absolute" css={{ position: 'fixed' }} />)
-    .toJSON()
+// it('should override style with css prop', () => {
+//   const tree = renderer
+//     .create(<Container position="absolute" css={{ position: 'fixed' }} />)
+//     .toJSON()
 
-  expect(tree).toHaveStyleRule('position', 'fixed')
-})
+//   expect(tree).toHaveStyleRule('position', 'fixed')
+// })

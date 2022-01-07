@@ -17,21 +17,18 @@ export interface FlexBoxProps extends ContainerProps {
   order?: Property.Order
 }
 
-const FlexBox = styled(Container)<FlexBoxProps>(
-  (props) => ({
-    display: props.flex ? 'flex' : undefined,
-    flexGrow: props.flexGrow,
-    flexShrink: props.flexShrink,
-    flexBasis: props.flexBasis,
-    flexDirection: props.flexDirection,
-    flexWrap: props.flexWrap,
-    justifyContent: props.justifyContent,
-    alignItems: props.alignItems,
-    alignContent: props.alignContent,
-    alignSelf: props.alignSelf,
-    order: props.order,
-  }),
-  (props) => props.css,
-)
+const FlexBox = styled(Container)<FlexBoxProps>((props) => ({
+  display: props.flex ? 'flex' : undefined,
+  flexGrow: props.flexGrow,
+  flexShrink: props.flexShrink,
+  flexBasis: props.flexBasis,
+  flexDirection: props.flexDirection,
+  flexWrap: props.flexWrap,
+  justifyContent: props.justifyContent,
+  alignItems: props.alignItems,
+  alignContent: props.alignContent,
+  alignSelf: props.alignSelf,
+  order: props.order,
+}))
 
 export default FlexBox

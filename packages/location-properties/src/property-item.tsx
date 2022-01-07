@@ -5,8 +5,17 @@ import {
   useUserAgentContext,
   useHistoryFunctions,
 } from '@titicaca/react-contexts'
+import styled from 'styled-components'
 
 export const ACTION_SHEET_PREFIX = 'location-properties.copy-action-sheet'
+
+const TitleText = styled(Text)`
+  flex-shrink: 1;
+`
+
+const ContentText = styled(Text)`
+  flex: 1;
+`
 
 export interface PropertyItemProps {
   title: string
@@ -48,22 +57,19 @@ export default function PropertyItem({
         onLongClick={!isPublic ? handleLongClick : undefined}
         onClick={onClick}
       >
-        <Text bold size="small" css={{ flexShrink: 1, lineHeight: 1.43 }}>
+        <TitleText bold size="small" lineHeight={1.43}>
           {title}
-        </Text>
-        <Text
+        </TitleText>
+        <ContentText
           size="small"
           alpha={0.7}
           ellipsis={singleLine}
-          css={{
-            marginLeft: 10,
-            flex: 1,
-            lineHeight: 1.43,
-            wordBreak: 'break-all',
-          }}
+          margin={{ left: 10 }}
+          wordBreak="break-all"
+          lineHeight={1.43}
         >
           {value}
-        </Text>
+        </ContentText>
       </LongClickableItemContainer>
     </List.Item>
   )
