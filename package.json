@@ -8,6 +8,7 @@
     "dev": "npm run build && concurrently --names watch:resources,watch:declarations,docs --kill-others 'npm:watch:resources' 'npm:watch:declarations' 'npm:dev-docs'",
     "watch:resources": "node scripts/build-watch",
     "watch:declarations": "npm run build-declarations -- --watch",
+    "build-turbo": "turbo run build",
     "build": "concurrently --names resources,declarations 'npm:build-resources' 'npm:build-declarations'",
     "build:ci": "concurrently --names resources,declarations 'npm:build:resources:babel' 'npm:build-declarations'",
     "prebuild": "npm run clean:build",
@@ -28,7 +29,6 @@
     "make-test-tsconfig": "node scripts/make-test-tsconfig",
     "sync-deps": "npm run make-tsconfig && npm run make-build-tsconfig && npm run make-test-tsconfig",
     "prepare": "[ $PREPARE_HUSKY_DISABLED ] || husky install",
-    "postinstall": "npm run sync-deps",
     "version": "lerna version --no-push --force-publish",
     "postversion": "npm install && git commit --amend -a -C HEAD",
     "lint:es": "eslint '**/*.{js,ts,tsx,mdx}'",
@@ -81,13 +81,12 @@
     "react-test-renderer": "^17.0.2",
     "styled-components": "^5.3.3",
     "ts-jest": "^27.1.2",
+    "turbo": "^1.1.2",
     "typescript": "~4.3.5",
     "utility-types": "^3.10.0"
   },
   "workspaces": [
-    "packages/*",
-    "docs",
-    "integration-test"
+    "packages/*"
   ],
   "lint-staged": {
     "**/*.{js,ts,tsx}": [
@@ -96,5 +95,18 @@
     "**/*.{json,yaml,md}": [
       "prettier --check"
     ]
+  },
+  "turbo": {
+    "baseBranch": "origin/main",
+    "pipeline": {
+      "build": {
+        "outputs": [
+          "lib/**"
+        ],
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
   }
 }
