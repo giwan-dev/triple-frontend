@@ -8,8 +8,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "swc src -d lib --config-file ../../.swcrc",
+    "build:types": "tsc -b"
+  },
   "dependencies": {
     "@titicaca/triple-web-to-native-interfaces": "1.5.0",
+    "@titicaca/view-utilities": "^6.2.1",
     "qs": "^6.9.4",
     "semver": "^7.3.5"
   },
@@ -18,6 +24,7 @@
     "@types/semver": "^7.3.6"
   },
   "peerDependencies": {
+    "@titicaca/react-contexts": "*",
     "next": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0"
   }
 }

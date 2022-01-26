@@ -15,6 +15,11 @@
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "swc src -d lib --config-file ../../.swcrc",
+    "build:types": "tsc -b"
+  },
   "dependencies": {
     "@titicaca/react-intersection-observer": "1.6.0",
     "intersection-observer": "^0.7.0"

@@ -1,18 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/core-elements": ["../core-elements/src"],
-      "@titicaca/pricing": ["../pricing/src"],
-      "@titicaca/scrap-button": ["../scrap-button/src"],
-      "@titicaca/type-definitions": ["../type-definitions/src"],
-      "@titicaca/view-utilities": ["../view-utilities/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../core-elements"

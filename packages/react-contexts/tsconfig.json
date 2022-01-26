@@ -1,17 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/constants": ["../constants/src"],
-      "@titicaca/fetcher": ["../fetcher/src"],
-      "@titicaca/type-definitions": ["../type-definitions/src"],
-      "@titicaca/view-utilities": ["../view-utilities/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../constants"

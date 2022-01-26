@@ -1,17 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/action-sheet": ["../action-sheet/src"],
-      "@titicaca/color-palette": ["../color-palette/src"],
-      "@titicaca/core-elements": ["../core-elements/src"],
-      "@titicaca/drawer-button": ["../drawer-button/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../action-sheet"

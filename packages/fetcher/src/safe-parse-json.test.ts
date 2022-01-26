@@ -1,5 +1,3 @@
-import { Response } from 'node-fetch'
-
 import safeParseJson from './safe-parse-json'
 
 it('JSON 파싱 에러를 조용히 넘깁니다.', async () => {

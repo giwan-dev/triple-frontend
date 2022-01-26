@@ -1,16 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/color-palette": ["../color-palette/src"],
-      "@titicaca/core-elements": ["../core-elements/src"],
-      "@titicaca/web-storage": ["../web-storage/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../color-palette"

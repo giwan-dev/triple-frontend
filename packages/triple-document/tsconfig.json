@@ -1,29 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/color-palette": ["../color-palette/src"],
-      "@titicaca/core-elements": ["../core-elements/src"],
-      "@titicaca/fetcher": ["../fetcher/src"],
-      "@titicaca/intersection-observer": ["../intersection-observer/src"],
-      "@titicaca/map": ["../map/src"],
-      "@titicaca/modals": ["../modals/src"],
-      "@titicaca/poi-list-elements": ["../poi-list-elements/src"],
-      "@titicaca/react-contexts": ["../react-contexts/src"],
-      "@titicaca/router": ["../router/src"],
-      "@titicaca/scrap-button": ["../scrap-button/src"],
-      "@titicaca/standard-action-handler": ["../standard-action-handler/src"],
-      "@titicaca/triple-media": ["../triple-media/src"],
-      "@titicaca/type-definitions": ["../type-definitions/src"],
-      "@titicaca/ui-flow": ["../ui-flow/src"],
-      "@titicaca/user-verification": ["../user-verification/src"],
-      "@titicaca/view-utilities": ["../view-utilities/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../color-palette"

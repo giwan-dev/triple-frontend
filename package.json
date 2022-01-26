@@ -14,7 +14,7 @@
     "prebuild": "npm run clean:build",
     "build-resources": "lerna exec --ignore=@titicaca/triple-frontend-docs --ignore=@titicaca/frontend-integration-test -- swc src -d lib --config-file \\$LERNA_ROOT_PATH/.swcrc",
     "build:resources:babel": "lerna exec --ignore @titicaca/triple-frontend-docs --ignore=@titicaca/frontend-integration-test 'BABEL_ENV=build babel --root-mode upward src --out-dir lib --source-maps --extensions .ts,.tsx,.js --no-comments'",
-    "build-declarations": "tsc -b packages/*/tsconfig.build.json",
+    "build-declarations": "tsc -b packages/*/tsconfig.json",
     "build:storybook": "lerna exec --scope @titicaca/triple-frontend-docs 'npm run build'",
     "dev-docs": "lerna exec --scope @titicaca/triple-frontend-docs npm run dev",
     "test": "jest",

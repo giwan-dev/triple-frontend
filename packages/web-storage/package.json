@@ -15,6 +15,11 @@
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "swc src -d lib --config-file ../../.swcrc",
+    "build:types": "tsc -b"
+  },
   "dependencies": {
     "ts-custom-error": "^3.2.0",
     "universal-cookie": "^4.0.4"

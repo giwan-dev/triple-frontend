@@ -15,6 +15,11 @@
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "swc src -d lib --config-file ../../.swcrc",
+    "build:types": "tsc -b"
+  },
   "dependencies": {
     "i18next": "^19.3.3",
     "isomorphic-fetch": "^2.2.1",

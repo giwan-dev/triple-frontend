@@ -1,20 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./lib",
     "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@titicaca/action-sheet": ["../action-sheet/src"],
-      "@titicaca/core-elements": ["../core-elements/src"],
-      "@titicaca/fetcher": ["../fetcher/src"],
-      "@titicaca/modals": ["../modals/src"],
-      "@titicaca/router": ["../router/src"],
-      "@titicaca/ui-flow": ["../ui-flow/src"],
-      "@titicaca/view-utilities": ["../view-utilities/src"]
-    }
+    "outDir": "lib"
   },
-  "include": ["./src"],
+  "include": ["src"],
   "references": [
     {
       "path": "../action-sheet"

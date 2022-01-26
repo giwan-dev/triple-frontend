@@ -15,6 +15,11 @@
   "files": [
     "lib"
   ],
+  "scripts": {
+    "build": "npm run build:cjs",
+    "build:cjs": "swc src -d lib --config-file ../../.swcrc",
+    "build:types": "tsc -b"
+  },
   "peerDependencies": {
     "@titicaca/react-contexts": "*",
     "react": "*",
