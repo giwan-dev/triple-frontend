@@ -95,18 +95,5 @@
     "**/*.{json,yaml,md}": [
       "prettier --check"
     ]
-  },
-  "turbo": {
-    "baseBranch": "origin/main",
-    "pipeline": {
-      "build": {
-        "outputs": [
-          "lib/**"
-        ],
-        "dependsOn": [
-          "^build"
-        ]
-      }
-    }
   }
 }
