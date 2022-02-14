@@ -99,3 +99,9 @@ packages/*/package-lock.json
 
 # docs
 docs/storybook-static/
+
+# swc
+.swc
+
+# turborepo
+.turbo
