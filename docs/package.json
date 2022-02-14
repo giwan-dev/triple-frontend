@@ -4,8 +4,8 @@
   "private": true,
   "description": "Documentation project for triple-frontend packages",
   "scripts": {
-    "dev": "start-storybook --quiet -p 6006 -s ./public",
-    "build": "build-storybook --quiet -s ./public",
+    "storybook": "start-storybook --quiet -p 6006 -s ./public",
+    "build-storybook": "build-storybook --quiet -s ./public",
     "chromatic": "chromatic --project-token=CHROMATIC_PROJECT_TOKEN"
   },
   "dependencies": {
