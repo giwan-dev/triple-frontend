@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/type-definitions": "^6.2.1",
@@ -30,6 +31,10 @@
   },
   "devDependencies": {
     "@types/haversine": "^1.1.4",
-    "@types/humps": "^2.0.0"
+    "@types/humps": "^2.0.0",
+    "configs": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

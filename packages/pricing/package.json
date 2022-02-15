@@ -18,11 +18,18 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/core-elements": "^6.2.1",
     "@titicaca/type-definitions": "^6.2.1",
     "@titicaca/view-utilities": "^6.2.1"
+  },
+  "devDependencies": {
+    "configs": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

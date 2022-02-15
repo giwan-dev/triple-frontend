@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
@@ -28,9 +29,13 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
-    "@types/scroll-to-element": "^2.0.0"
+    "@types/scroll-to-element": "^2.0.0",
+    "configs": "*"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

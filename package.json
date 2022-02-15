@@ -8,7 +8,7 @@
     "dev": "npm run build && concurrently --names watch:resources,watch:declarations,docs --kill-others 'npm:watch:resources' 'npm:watch:declarations' 'npm:dev-docs'",
     "watch:resources": "node scripts/build-watch",
     "watch:declarations": "npm run build-declarations -- --watch",
-    "build-turbo": "turbo run build",
+    "build-turbo": "FORCE_COLOR=1 turbo run build",
     "build": "concurrently --names resources,declarations 'npm:build-resources' 'npm:build-declarations'",
     "build:ci": "concurrently --names resources,declarations 'npm:build:resources:babel' 'npm:build-declarations'",
     "prebuild": "npm run clean:build",
@@ -17,7 +17,8 @@
     "build-declarations": "tsc -b packages/*/tsconfig.json",
     "build:storybook": "lerna exec --scope @titicaca/triple-frontend-docs 'npm run build'",
     "dev-docs": "lerna exec --scope @titicaca/triple-frontend-docs npm run dev",
-    "test": "jest",
+    "test-turbo": "FORCE_COLOR=1 turbo run test",
+    "test": "jest --passWithNoTests",
     "test:ci": "jest --ci",
     "test:watch": "jest --watch",
     "test:coverage": "jest --ci --coverage",
@@ -86,6 +87,9 @@
     "utility-types": "^3.10.0"
   },
   "workspaces": [
+    "configs",
+    "docs",
+    "integration-test",
     "packages/*"
   ],
   "lint-staged": {
@@ -95,5 +99,8 @@
     "**/*.{json,yaml,md}": [
       "prettier --check"
     ]
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

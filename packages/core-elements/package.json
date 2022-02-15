@@ -24,7 +24,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/color-palette": "^6.2.1",
@@ -34,9 +35,15 @@
     "react-input-mask": "^2.0.4",
     "react-transition-group": "^4.4.1"
   },
+  "devDependencies": {
+    "configs": "*"
+  },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
     "styled-components": ">=4.4.1 < 6"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

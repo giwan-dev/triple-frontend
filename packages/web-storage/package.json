@@ -18,14 +18,19 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "configs": "*",
     "ts-custom-error": "^3.2.0",
     "universal-cookie": "^4.0.4"
   },
   "peerDependencies": {
     "@titicaca/modals": "*",
     "react": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

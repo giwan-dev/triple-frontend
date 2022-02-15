@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/action-sheet": "^6.2.1",
@@ -26,5 +27,11 @@
     "@titicaca/core-elements": "^6.2.1",
     "@titicaca/drawer-button": "^6.2.1",
     "react-input-mask": "^2.0.4"
+  },
+  "devDependencies": {
+    "configs": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

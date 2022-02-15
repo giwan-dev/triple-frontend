@@ -4,6 +4,10 @@
     "build": {
       "outputs": ["lib/**"],
       "dependsOn": ["^build"]
+    },
+    "test": {
+      "outputs": [],
+      "dependsOn": []
     }
   }
 }

@@ -24,15 +24,22 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/modals": "^6.2.1",
     "qs": "^6.9.0"
   },
+  "devDependencies": {
+    "configs": "*"
+  },
   "peerDependencies": {
     "@titicaca/fetcher": "*",
     "@titicaca/react-contexts": "*",
     "next": "^9.3.0 || ^10.0.0 || ^11.0.0 || ^12.0.0"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

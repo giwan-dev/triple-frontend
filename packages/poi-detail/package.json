@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/action-sheet": "^6.2.1",
@@ -35,9 +36,13 @@
     "qs": "^6.10.1"
   },
   "devDependencies": {
-    "@types/isomorphic-fetch": "^0.0.35"
+    "@types/isomorphic-fetch": "^0.0.35",
+    "configs": "*"
   },
   "peerDependencies": {
     "@titicaca/react-contexts": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

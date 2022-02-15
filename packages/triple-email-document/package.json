@@ -18,5 +18,11 @@
   "dependencies": {
     "@titicaca/core-elements": "^6.2.1",
     "@titicaca/type-definitions": "^6.2.1"
+  },
+  "devDependencies": {
+    "configs": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

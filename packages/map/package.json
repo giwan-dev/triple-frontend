@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@react-google-maps/api": "~2.2.0",
@@ -26,6 +27,10 @@
     "@titicaca/router": "^6.2.1"
   },
   "devDependencies": {
-    "@types/googlemaps": "^3.43.3"
+    "@types/googlemaps": "^3.43.3",
+    "configs": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

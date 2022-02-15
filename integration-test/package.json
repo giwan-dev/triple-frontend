@@ -20,5 +20,8 @@
     "@titicaca/modals": "^6.2.1",
     "@titicaca/react-contexts": "^6.2.1",
     "@titicaca/router": "^6.2.1"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }

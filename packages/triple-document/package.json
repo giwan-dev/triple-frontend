@@ -18,7 +18,8 @@
   "scripts": {
     "build": "npm run build:cjs",
     "build:cjs": "swc src -d lib --config-file ../../.swcrc",
-    "build:types": "tsc -b"
+    "build:types": "tsc -b",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@titicaca/color-palette": "^6.2.1",
@@ -40,9 +41,13 @@
     "semver": "^7.3.5"
   },
   "devDependencies": {
-    "@types/semver": "^7.3.6"
+    "@types/semver": "^7.3.6",
+    "configs": "*"
   },
   "peerDependencies": {
     "@titicaca/react-contexts": "*"
+  },
+  "jest": {
+    "preset": "configs/jest"
   }
 }
