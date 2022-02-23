@@ -11,6 +11,13 @@ export default {
     title: UnsafeModal.Title,
     trigger: UnsafeModal.Trigger,
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 1200, height: 800 }}>
+        <Story />
+      </div>
+    ),
+  ],
 } as ComponentMeta<typeof UnsafeModal>
 
 export const Basic: ComponentStoryFn<typeof UnsafeModal> = () => {
