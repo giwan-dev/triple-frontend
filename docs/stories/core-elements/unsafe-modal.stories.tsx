@@ -23,9 +23,7 @@ export default {
 export const Basic: ComponentStoryFn<typeof UnsafeModal> = () => {
   return (
     <UnsafeModal defaultOpen>
-      <UnsafeModal.Trigger>
-        <button>Modal 열기</button>
-      </UnsafeModal.Trigger>
+      <UnsafeModal.Trigger>Modal 열기</UnsafeModal.Trigger>
       <UnsafeModal.Content>
         <UnsafeModal.Body title="Modal title" description="Modal description" />
       </UnsafeModal.Content>

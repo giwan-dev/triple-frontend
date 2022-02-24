@@ -23,9 +23,7 @@ export default {
 export const Alert: ComponentStoryFn<typeof UnsafeAlertModal> = () => {
   return (
     <UnsafeAlertModal defaultOpen>
-      <UnsafeAlertModal.Trigger>
-        <button>AlertModal 열기</button>
-      </UnsafeAlertModal.Trigger>
+      <UnsafeAlertModal.Trigger>AlertModal 열기</UnsafeAlertModal.Trigger>
       <UnsafeAlertModal.Content>
         <UnsafeAlertModal.Body
           description="삭제하겠습니까? 삭제하면 적립된 리뷰 포인트도 함께 사라집니다."
@@ -40,9 +38,7 @@ export const Alert: ComponentStoryFn<typeof UnsafeAlertModal> = () => {
 export const Confirm: ComponentStoryFn<typeof UnsafeAlertModal> = () => {
   return (
     <UnsafeAlertModal defaultOpen>
-      <UnsafeAlertModal.Trigger>
-        <button>AlertModal 열기</button>
-      </UnsafeAlertModal.Trigger>
+      <UnsafeAlertModal.Trigger>AlertModal 열기</UnsafeAlertModal.Trigger>
       <UnsafeAlertModal.Content>
         <UnsafeAlertModal.Body
           title={`장애공지\n타이틀이 두줄일수도`}
