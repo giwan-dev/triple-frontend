@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 
@@ -14,7 +14,7 @@ const StyledButton = styled.button`
 `
 
 interface Props {
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export function AlertModalCancel({ children }: Props) {
