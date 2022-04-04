@@ -20,5 +20,11 @@ export function MediaConfigProvider({
 }
 
 export function useMediaConfig() {
-  return useContext(MediaConfigContext)
+  const context = useContext(MediaConfigContext)
+
+  if (context === undefined) {
+    throw new Error('MediaConfigProvider is not mounted')
+  }
+
+  return context
 }
