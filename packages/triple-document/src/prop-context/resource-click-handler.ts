@@ -15,5 +15,11 @@ const ResourceClickHandlerContext = createContext<
 export const ResourceClickHandlerProvider = ResourceClickHandlerContext.Provider
 
 export function useResourceClickHandler() {
-  return useContext(ResourceClickHandlerContext)
+  const context = useContext(ResourceClickHandlerContext)
+
+  if (context === undefined) {
+    throw new Error('ResourceClickHandlerProvider is not mounted')
+  }
+
+  return context
 }
