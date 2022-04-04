@@ -13,7 +13,13 @@ const UserAgentContext = createContext<UserAgentValue>({
 export const UserAgentProvider = UserAgentContext.Provider
 
 export function useUserAgentContext() {
-  return useContext(UserAgentContext)
+  const context = useContext(UserAgentContext)
+
+  if (context === undefined) {
+    throw new Error('UserAgentProvider is not mounted')
+  }
+
+  return context
 }
 
 export interface WithUserAgentBaseProps {
