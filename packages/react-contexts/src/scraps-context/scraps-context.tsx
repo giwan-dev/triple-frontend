@@ -32,7 +32,7 @@ import {
   ScrapsReducerContext,
 } from './use-reducer'
 
-interface ScrapsContext {
+interface ScrapsContextValue {
   scraps: Scraps
   deriveCurrentStateAndCount: (params: {
     id: string
@@ -73,7 +73,7 @@ function createNoOpFunctions(name: string) {
   }
 }
 
-const Context = createContext<ScrapsContext>({
+const ScrapsContext = createContext<ScrapsContextValue>({
   scraps: {},
   deriveCurrentStateAndCount: ({ scraped = false, scrapsCount = 0 }) => ({
     scraped,
@@ -108,7 +108,7 @@ export function ScrapsProvider({
   const { scraps, updating, dispatch } = scrapsReducer
   const hasParentContext = !!parentScrapsReducer
 
-  const deriveCurrentStateAndCount: ScrapsContext['deriveCurrentStateAndCount'] =
+  const deriveCurrentStateAndCount: ScrapsContextValue['deriveCurrentStateAndCount'] =
     useCallback(
       ({ id, scraped, scrapsCount: originalScrapsCount }) => {
         const currentState =
@@ -214,7 +214,7 @@ export function ScrapsProvider({
     return () => unsubscribeScrapedChangeEvent(handleSubscribeEvent)
   }, [dispatch, hasParentContext])
 
-  const value: ScrapsContext = useMemo(
+  const value: ScrapsContextValue = useMemo(
     () => ({
       deriveCurrentStateAndCount,
       scrape,
@@ -263,13 +263,19 @@ export function ScrapsProvider({
 
   return (
     <ScrapsReducerContext.Provider value={scrapsReducer}>
-      <Context.Provider value={value}>{children}</Context.Provider>
+      <ScrapsContext.Provider value={value}>{children}</ScrapsContext.Provider>
     </ScrapsReducerContext.Provider>
   )
 }
 
 export function useScrapsContext() {
-  const { isDefault, ...rest } = useContext(Context)
+  const context = useContext(ScrapsContext)
+
+  if (context === undefined) {
+    throw new Error('ScrapsProvider is not mounted')
+  }
+
+  const { isDefault, ...rest } = context
 
   if (isDefault && process.env.NODE_ENV === 'development') {
     // TODO: development 환경에서만 기록하는 logger 만들기
@@ -281,9 +287,12 @@ export function useScrapsContext() {
 }
 
 export interface WithScrapsBaseProps {
-  deriveCurrentScrapedStateAndCount: ScrapsContext['deriveCurrentStateAndCount']
+  deriveCurrentScrapedStateAndCount: ScrapsContextValue['deriveCurrentStateAndCount']
   scraps: Scraps
-  scrapActions: Omit<ScrapsContext, 'deriveCurrentStateAndCount' | 'scraps'>
+  scrapActions: Omit<
+    ScrapsContextValue,
+    'deriveCurrentStateAndCount' | 'scraps'
+  >
 }
 
 export function withScraps<P extends DeepPartial<WithScrapsBaseProps>>(
