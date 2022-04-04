@@ -9,5 +9,11 @@ const ImageClickHandlerContext = createContext<ImageEventHandler | undefined>(
 export const ImageClickHandlerProvider = ImageClickHandlerContext.Provider
 
 export function useImageClickHandler() {
-  return useContext(ImageClickHandlerContext)
+  const context = useContext(ImageClickHandlerContext)
+
+  if (context === undefined) {
+    throw new Error('ImageClickHandlerProvider is not mounted')
+  }
+
+  return context
 }
