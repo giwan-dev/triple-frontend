@@ -6,5 +6,11 @@ const ImageSourceContext = createContext<ImageSourceType | undefined>(undefined)
 export const ImageSourceProvider = ImageSourceContext.Provider
 
 export function useImageSource() {
-  return useContext(ImageSourceContext)
+  const context = useContext(ImageSourceContext)
+
+  if (context === undefined) {
+    throw new Error('ImageSourceProvider is not mounted')
+  }
+
+  return context
 }
