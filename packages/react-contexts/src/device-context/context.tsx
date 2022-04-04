@@ -16,7 +16,7 @@ interface DeviceContextValue {
   deviceState: DeviceState
 }
 
-const Context = createContext<DeviceContextValue>({
+const DeviceContext = createContext<DeviceContextValue>({
   inRegion: false,
   latitude: null,
   longitude: null,
@@ -33,7 +33,11 @@ export function DeviceProvider({
     ...initialValue,
     deviceState: initialValue.deviceState || DEFAULT_DEVICE_STATE,
   })
-  return <Context.Provider value={deviceContext}>{children}</Context.Provider>
+  return (
+    <DeviceContext.Provider value={deviceContext}>
+      {children}
+    </DeviceContext.Provider>
+  )
 }
 
 export interface WithDeviceContextBaseProps {
@@ -45,7 +49,7 @@ export function withDeviceContext<
 >(Component: ComponentType<P>) {
   return function WithDeviceComponent(props: Omit<P, 'deviceContext'>) {
     return (
-      <Context.Consumer>
+      <DeviceContext.Consumer>
         {(context) => {
           const componentProps = {
             ...props,
@@ -54,11 +58,17 @@ export function withDeviceContext<
 
           return <Component {...componentProps} />
         }}
-      </Context.Consumer>
+      </DeviceContext.Consumer>
     )
   }
 }
 
 export function useDeviceContext() {
-  return useContext(Context)
+  const context = useContext(DeviceContext)
+
+  if (context === undefined) {
+    throw new Error('DeviceProvier is not mounted')
+  }
+
+  return context
 }
