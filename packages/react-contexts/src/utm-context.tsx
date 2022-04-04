@@ -60,19 +60,25 @@ export function extractUtmContextFromQuery({
   }
 }
 
-const Context = createContext<UtmContextValue>({
+const UtmContext = createContext<UtmContextValue>({
   source: '',
   medium: '',
   campaign: '',
 })
 
-export const UtmProvider = Context.Provider
+export const UtmProvider = UtmContext.Provider
 
 /**
  * Functional 컴포넌트에 utm context를 inject할 때 사용하는 함수
  */
 export function useUtmContext() {
-  return useContext(Context)
+  const context = useContext(UtmContext)
+
+  if (context === undefined) {
+    throw new Error('UtmProvider is not mounted')
+  }
+
+  return context
 }
 
 export interface WithUtmContextBaseProps {
@@ -90,7 +96,7 @@ export function withUtmContext<P extends DeepPartial<WithUtmContextBaseProps>>(
     props: Omit<P, keyof WithUtmContextBaseProps>,
   ) {
     return (
-      <Context.Consumer>
+      <UtmContext.Consumer>
         {(utmContext) => {
           const componentProps = {
             ...props,
@@ -99,7 +105,7 @@ export function withUtmContext<P extends DeepPartial<WithUtmContextBaseProps>>(
 
           return <Component {...componentProps} />
         }}
-      </Context.Consumer>
+      </UtmContext.Consumer>
     )
   }
 }
