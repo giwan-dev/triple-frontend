@@ -3,10 +3,12 @@ import { ComponentStoryObj, Meta } from '@storybook/react'
 
 import POIS from '../__mocks__/pois.sample.json'
 import HOTELS from '../__mocks__/hotels.sample.json'
+import { eventMetadataDecorator } from '../../decorators'
 
 export default {
   title: 'poi-list-elements / PoiList',
   component: PoiListElement,
+  decorators: [eventMetadataDecorator],
 } as Meta
 
 const [POI] = POIS

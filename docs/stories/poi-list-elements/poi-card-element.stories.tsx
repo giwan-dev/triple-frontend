@@ -1,9 +1,12 @@
 import { PoiCardElement } from '@titicaca/poi-list-elements'
 import { ComponentStoryObj, Meta } from '@storybook/react'
 
+import { eventMetadataDecorator } from '../../decorators'
+
 export default {
   title: 'poi-list-elements / PoiCardElement',
   component: PoiCardElement,
+  decorators: [eventMetadataDecorator],
 } as Meta
 
 export const Hotel: ComponentStoryObj<typeof PoiCardElement> = {

@@ -4,6 +4,7 @@ import { ScrollSpyContainer, ScrollSpyEntity } from '@titicaca/scroll-spy'
 import { PoiListElement } from '@titicaca/poi-list-elements'
 import { ListingPoi } from '@titicaca/type-definitions'
 
+import { eventMetadataDecorator } from '../../decorators'
 import POIS from '../__mocks__/pois.sample.json'
 
 function ScrollSpy() {
@@ -35,6 +36,7 @@ function ScrollSpy() {
 export default {
   title: 'Scroll Spy',
   component: ScrollSpy,
+  decorators: [eventMetadataDecorator],
 } as Meta
 
 export const BaseScrollSpy: ComponentStoryObj<typeof ScrollSpy> = {

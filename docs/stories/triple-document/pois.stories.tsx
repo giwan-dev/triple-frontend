@@ -3,10 +3,15 @@ import { ELEMENTS } from '@titicaca/triple-document'
 
 import POIS from '../__mocks__/pois.sample.json'
 import HOTEL from '../__mocks__/hotel.sample.json'
+import { eventMetadataDecorator } from '../../decorators'
 
 const { pois: Pois } = ELEMENTS
 
-export default { title: 'triple-document / POI', component: Pois } as Meta
+export default {
+  title: 'triple-document / POI',
+  component: Pois,
+  decorators: [eventMetadataDecorator],
+} as Meta
 
 export function Normal() {
   return (

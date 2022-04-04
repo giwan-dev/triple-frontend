@@ -3,9 +3,12 @@ import { Meta, Story } from '@storybook/react'
 import { EnvProvider } from '@titicaca/react-contexts'
 import { TripleClientMetadataProvider } from '@titicaca/react-triple-client-interfaces'
 
+import { eventMetadataDecorator } from '../../decorators'
+
 export default {
   title: 'public-header / PublicHeader',
   component: PublicHeader,
+  decorators: [eventMetadataDecorator],
   argTypes: {
     category: {
       control: { type: 'select' },

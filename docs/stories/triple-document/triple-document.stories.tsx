@@ -11,6 +11,7 @@ import MOCK_EMBEDDED from '../__mocks__/triple-document.embedded.json'
 import MOCK_ITINERARY from '../__mocks__/triple-document.itinerary.json'
 import {
   envProviderDecorator,
+  eventMetadataDecorator,
   sessionContextProviderDecorator,
   tripleClientMetadataDecorator,
 } from '../../decorators'
@@ -32,6 +33,7 @@ export default {
     envProviderDecorator,
     sessionContextProviderDecorator,
     tripleClientMetadataDecorator,
+    eventMetadataDecorator,
   ],
 } as Meta
 

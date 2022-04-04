@@ -4,6 +4,7 @@ import {
   SessionContextProvider,
   EnvProvider,
   UserAgentProvider,
+  EventMetadataProvider,
 } from '@titicaca/react-contexts'
 import { TripleClientMetadataProvider } from '@titicaca/react-triple-client-interfaces'
 import { GlobalStyle } from '@titicaca/core-elements'
@@ -116,5 +117,13 @@ export function tripleClientMetadataDecorator(Story: StoryFn) {
     <TripleClientMetadataProvider {...null}>
       <Story />
     </TripleClientMetadataProvider>
+  )
+}
+
+export function eventMetadataDecorator(Story: StoryFn) {
+  return (
+    <EventMetadataProvider>
+      <Story />
+    </EventMetadataProvider>
   )
 }
