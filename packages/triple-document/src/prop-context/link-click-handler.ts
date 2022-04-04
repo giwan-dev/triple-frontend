@@ -9,5 +9,11 @@ const LinkClickHandlerContext = createContext<LinkEventHandler | undefined>(
 export const LinkClickHandlerProvider = LinkClickHandlerContext.Provider
 
 export function useLinkClickHandler() {
-  return useContext(LinkClickHandlerContext)
+  const context = useContext(LinkClickHandlerContext)
+
+  if (context === undefined) {
+    throw new Error('LinkClickHandlerProvider is not mounted')
+  }
+
+  return context
 }
