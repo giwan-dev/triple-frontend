@@ -64,7 +64,7 @@ export interface EventTrackingContextValue {
   setFirebaseUserId: (userId: string | null) => void
 }
 
-const Context = createContext<EventTrackingContextValue>({
+const EventTrackingContext = createContext<EventTrackingContextValue>({
   trackScreen: NOOP,
   trackEvent: NOOP,
   trackSimpleEvent: NOOP,
@@ -309,11 +309,21 @@ export function EventTrackingProvider({
     }
   }, [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Context.Provider value={value}>{children}</Context.Provider>
+  return (
+    <EventTrackingContext.Provider value={value}>
+      {children}
+    </EventTrackingContext.Provider>
+  )
 }
 
 export function useEventTrackingContext() {
-  return useContext(Context)
+  const context = useContext(EventTrackingContext)
+
+  if (context === undefined) {
+    throw new Error('EventTrackingProvider is not mounted')
+  }
+
+  return context
 }
 
 export type WithEventTrackingBaseProps = EventTrackingContextValue
@@ -325,7 +335,7 @@ export function withEventTracking<
     props: Omit<P, keyof WithEventTrackingBaseProps>,
   ) {
     return (
-      <Context.Consumer>
+      <EventTrackingContext.Consumer>
         {({ trackScreen, trackEvent, trackSimpleEvent, viewItem }) => (
           <Component
             {...({
@@ -337,7 +347,7 @@ export function withEventTracking<
             } as P)}
           />
         )}
-      </Context.Consumer>
+      </EventTrackingContext.Consumer>
     )
   }
 }
