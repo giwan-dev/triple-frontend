@@ -332,11 +332,23 @@ export function HistoryProvider({
 }
 
 export function useUriHash(): UriHash {
-  return useContext(UriHashContext)
+  const context = useContext(UriHashContext)
+
+  if (context === undefined) {
+    throw new Error('HistoryProvider is not mounted')
+  }
+
+  return context
 }
 
 export function useHistoryFunctions(): Omit<HistoryContextValue, 'uriHash'> {
-  return useContext(HistoryFunctionsContext)
+  const context = useContext(HistoryFunctionsContext)
+
+  if (context === undefined) {
+    throw new Error('HistoryProvider is not mounted')
+  }
+
+  return context
 }
 
 export interface WithHistoryBaseProps {
