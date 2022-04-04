@@ -7,18 +7,18 @@ import {
   PixelParams,
 } from './types'
 
-interface EventMetadataContext {
+interface EventMetadataContextValue {
   [key: string]: string
 }
 
-const EventMetadataContext = createContext<EventMetadataContext | undefined>(
-  undefined,
-)
+const EventMetadataContext = createContext<
+  EventMetadataContextValue | undefined
+>(undefined)
 
 export function EventMetadataProvider({
   children,
   eventMetadataContext,
-}: PropsWithChildren<{ eventMetadataContext?: EventMetadataContext }>) {
+}: PropsWithChildren<{ eventMetadataContext?: EventMetadataContextValue }>) {
   const parentEventMetadataContext = useContext(EventMetadataContext)
 
   return (
@@ -31,7 +31,13 @@ export function EventMetadataProvider({
 }
 
 function useEventMetadataContext() {
-  return useContext(EventMetadataContext)
+  const context = useContext(EventMetadataContext)
+
+  if (context === undefined) {
+    throw new Error('EventMetadataProvider is not mounted')
+  }
+
+  return context
 }
 
 export function useEventTrackerWithMetadata() {
@@ -53,7 +59,7 @@ export function useEventTrackerWithMetadata() {
 
 function getFirebaseAnalyticsWithMetadata(
   fa?: Partial<FirebaseAnalyticsParams>,
-  eventMetaContext?: EventMetadataContext,
+  eventMetaContext?: EventMetadataContextValue,
 ) {
   if (!fa) {
     return
@@ -67,7 +73,7 @@ function getFirebaseAnalyticsWithMetadata(
 
 function getGoogleAnalyticsWithMetadata(
   ga?: GoogleAnalyticsParams,
-  eventMetaContext?: EventMetadataContext,
+  eventMetaContext?: EventMetadataContextValue,
 ) {
   if (!ga) {
     return
@@ -88,7 +94,7 @@ function getGoogleAnalyticsWithMetadata(
 
 function getPixelWithMetadata(
   pixel?: PixelParams,
-  eventMetaContext?: EventMetadataContext,
+  eventMetaContext?: EventMetadataContextValue,
 ) {
   if (!pixel) {
     return
