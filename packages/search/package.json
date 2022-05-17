@@ -29,7 +29,6 @@
     "@titicaca/view-utilities": "^7.5.0"
   },
   "peerDependencies": {
-    "@titicaca/react-contexts": "*",
-    "@titicaca/triple-web-to-native-interfaces": "*"
+    "@titicaca/react-contexts": "*"
   }
 }

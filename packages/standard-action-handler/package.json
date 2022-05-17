@@ -27,8 +27,5 @@
   },
   "devDependencies": {
     "@types/qs": "^6.9.2"
-  },
-  "peerDependencies": {
-    "@titicaca/triple-web-to-native-interfaces": "*"
   }
 }

@@ -21,7 +21,6 @@
     "build:ci": "BABEL_ENV=build babel --root-mode upward src --out-dir lib --source-maps --extensions .ts,.tsx,.js --no-comments"
   },
   "dependencies": {
-    "@titicaca/react-intersection-observer": "1.6.0",
     "intersection-observer": "^0.7.0"
   },
   "peerDependencies": {
