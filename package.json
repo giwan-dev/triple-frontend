@@ -66,6 +66,7 @@
     "chokidar": "^3.4.0",
     "concurrently": "^6.0.0",
     "csstype": "^3.0.2",
+    "dependency-tree": "^8.1.2",
     "eslint-plugin-mdx": "^1.7.0",
     "husky": "^7.0.2",
     "jest": "^27.3.1",
