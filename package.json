@@ -68,6 +68,7 @@
     "csstype": "^3.0.2",
     "dependency-tree": "^8.1.2",
     "eslint-plugin-mdx": "^1.7.0",
+    "globby": "^13.1.1",
     "husky": "^7.0.2",
     "jest": "^27.3.1",
     "jest-styled-components": "^7.0.5",
