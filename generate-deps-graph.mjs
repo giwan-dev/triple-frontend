@@ -1,11 +1,9 @@
-import { writeFile } from 'fs/promises'
+import { writeFile, readFile } from 'fs/promises'
 import { join } from 'path'
-import { dir } from 'console'
 
 import { globby } from 'globby'
 import madge from 'madge'
 
-const skippedSet = new Set()
 const internalPackages = await getMonorepoPackages()
 const isInternalPackage = (path) =>
   new RegExp(`${internalPackages.join('|')}($|/.+)`).test(path)
@@ -17,10 +15,8 @@ const edges = dependencies
 
 await writeFile(
   './edge-table.csv',
-  edges.map((edge) => edge.join(',')).join('\n'),
+  `source,target\n${edges.map((edge) => edge.join(',')).join('\n')}`,
 )
-
-skippedSet.forEach((path) => console.log(path))
 
 async function getMonorepoPackages() {
   const paths = await globby('packages/*/package.json')
@@ -38,25 +34,21 @@ async function getFiles() {
 
 async function getDependencyList(filePath) {
   const directory = filePath.replace(/[^/]+$/, '')
-  const response = await madge(filePath)
+  const response = await madge(filePath, {
+    tsConfig: `${filePath.match(/(packages\/[^/]+)/)[0]}/tsconfig.json`,
+  })
   const depends = response
     .obj()
     [filePath.match(/[^/]+$/)[0]].map((path) => join(directory, path))
     .map(prettifyFilePath)
 
   const { skipped } = response.warnings()
-  const indexPaths = extractIndexFile(skipped)
-    .map((path) => join(directory, path))
-    .map(prettifyFilePath)
-  const internalPackages =
-    extractInternalPackages(skipped).map(prettifyFilePath)
-
-  skipped
-    .filter((path) => path.startsWith('.') === false)
-    .filter((path) => isInternalPackage(path) === false)
-    .forEach((path) => {
-      skippedSet.add(path)
-    })
+  const indexPaths = (await extractIndexFile(skipped, directory)).map(
+    prettifyFilePath,
+  )
+  const internalPackages = (
+    await extractInternalPackages(skipped, filePath)
+  ).map(prettifyFilePath)
 
   return {
     filePath: prettifyFilePath(filePath),
@@ -64,19 +56,38 @@ async function getDependencyList(filePath) {
   }
 }
 
-function extractIndexFile(skipped) {
-  return skipped
-    .filter((path) => path.startsWith('.'))
+async function extractIndexFile(skipped, directory) {
+  return (
+    await Promise.all(
+      skipped
+        .filter((path) => path.startsWith('.') === true)
+        .map(async (path) => {
+          const globbed = await globby(
+            join(directory, `${path}/index.{ts,tsx}`),
+          )
+          if (globbed.length === 0) {
+            return null
+          }
+          return join(directory, path)
+        }),
+    )
+  )
+    .filter(Boolean)
     .map((path) => `${path}/index.ts`)
 }
 
-function extractInternalPackages(skipped) {
-  return skipped.filter(isInternalPackage).map((path) => {
-    if (new RegExp(`${internalPackages.join('|')}$`).test(path) === true) {
-      return `${path.replace('@titicaca/', '')}/index.ts`
-    }
-    return `${path.replace('@titicaca/', '')}.ts`
-  })
+async function extractInternalPackages(skipped, filePath) {
+  const file = (await readFile(filePath)).toString()
+
+  return skipped
+    .filter(isInternalPackage)
+    .filter((path) => file.includes(path) === true)
+    .map((path) => {
+      if (new RegExp(`${internalPackages.join('|')}$`).test(path) === true) {
+        return `${path.replace('@titicaca/', 'packages/')}/index.ts`
+      }
+      return `${path.replace('@titicaca/', 'packages/')}.ts`
+    })
 }
 
 function prettifyFilePath(path) {
