@@ -1,10 +1,14 @@
 import { writeFile } from 'fs/promises'
 import { join } from 'path'
+import { dir } from 'console'
 
 import { globby } from 'globby'
 import madge from 'madge'
 
+const skippedSet = new Set()
 const internalPackages = await getMonorepoPackages()
+const isInternalPackage = (path) =>
+  new RegExp(`${internalPackages.join('|')}($|/.+)`).test(path)
 const files = await getFiles()
 const dependencies = await Promise.all(files.map(getDependencyList))
 const edges = dependencies
@@ -16,6 +20,8 @@ await writeFile(
   edges.map((edge) => edge.join(',')).join('\n'),
 )
 
+skippedSet.forEach((path) => console.log(path))
+
 async function getMonorepoPackages() {
   const paths = await globby('packages/*/package.json')
   return paths.map(
@@ -25,55 +31,59 @@ async function getMonorepoPackages() {
 }
 
 async function getFiles() {
-  const paths = await globby('packages/*/src/**/*.{ts,tsx}')
+  const paths = await globby(['packages/*/src/**/*.{ts,tsx}', '!**/*.test.*'])
   paths.sort()
   return paths
 }
 
 async function getDependencyList(filePath) {
+  const directory = filePath.replace(/[^/]+$/, '')
   const response = await madge(filePath)
-  const depends = response.depends(filePath)
+  const depends = response
+    .obj()
+    [filePath.match(/[^/]+$/)[0]].map((path) => join(directory, path))
+    .map(prettifyFilePath)
+
   const { skipped } = response.warnings()
-  const { depends: finalDepends } = includeInternalPackage(
-    includeIndexFile({ depends, skipped }),
-  )
+  const indexPaths = extractIndexFile(skipped)
+    .map((path) => join(directory, path))
+    .map(prettifyFilePath)
+  const internalPackages =
+    extractInternalPackages(skipped).map(prettifyFilePath)
+
+  skipped
+    .filter((path) => path.startsWith('.') === false)
+    .filter((path) => isInternalPackage(path) === false)
+    .forEach((path) => {
+      skippedSet.add(path)
+    })
 
   return {
-    filePath: filePath.replace(/\.tsx?/, ''),
-    depends: finalDepends.map((path) => {
-      if (path.startsWith('.') === true) {
-        const joined = join(filePath.replace(/\/[^/]+$/, ''), path)
-        return joined
-      }
-      return path
-    }),
+    filePath: prettifyFilePath(filePath),
+    depends: depends.concat(indexPaths).concat(internalPackages),
   }
 }
 
-function includeIndexFile({ depends, skipped }) {
-  const isIndexFile = (path) => path.startsWith('.')
-
-  return {
-    depends: depends.concat(
-      skipped.filter(isIndexFile).map((path) => `${path}/index`),
-    ),
-    skipped: skipped.filter((path) => isIndexFile(path) === false),
-  }
+function extractIndexFile(skipped) {
+  return skipped
+    .filter((path) => path.startsWith('.'))
+    .map((path) => `${path}/index.ts`)
 }
 
-function includeInternalPackage({ depends, skipped }) {
-  const isInternalPackage = (path) =>
-    new RegExp(`${internalPackages.join('|')}($|/.+)`).test(path)
+function extractInternalPackages(skipped) {
+  return skipped.filter(isInternalPackage).map((path) => {
+    if (new RegExp(`${internalPackages.join('|')}$`).test(path) === true) {
+      return `${path.replace('@titicaca/', '')}/index.ts`
+    }
+    return `${path.replace('@titicaca/', '')}.ts`
+  })
+}
 
-  return {
-    depends: depends.concat(
-      skipped.filter(isInternalPackage).map((path) => {
-        if (new RegExp(`${internalPackages.join('|')}$`).test(path) === true) {
-          return `${path.replace('@titicaca/', 'packages/')}/index`
-        }
-        return path.replace('@titicaca/', 'packages/')
-      }),
-    ),
-    skipped: skipped.filter((path) => isInternalPackage(path) === false),
+function prettifyFilePath(path) {
+  try {
+    return path.match(/packages\/(.+)(\.tsx?)$/)[1].replace('src/', '')
+  } catch (error) {
+    console.error(path)
+    throw error
   }
 }
