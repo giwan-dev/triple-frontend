@@ -27,7 +27,11 @@ async function getMonorepoPackages() {
 }
 
 async function getFiles() {
-  const paths = await globby(['packages/*/src/**/*.{ts,tsx}', '!**/*.test.*'])
+  const paths = await globby([
+    'packages/*/src/**/*.{ts,tsx}',
+    '!**/*.test.*',
+    '!**/*.spec.*',
+  ])
   paths.sort()
   return paths
 }
